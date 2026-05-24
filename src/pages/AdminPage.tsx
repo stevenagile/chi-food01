@@ -65,7 +65,7 @@ const AdminPage = () => {
   const renderOrderCard = (order: Order) => {
     const isPaid = order.paymentStatus === '已付款';
     return (
-      <div key={order.id} className="bg-card rounded-lg border border-border p-2.5 shadow-warm text-sm">
+      <div key={order.id} className="bg-card rounded-lg border border-border p-2.5 shadow-warm text-sm self-start">
         <div className="flex items-center justify-between mb-1.5 gap-2">
           <div className="min-w-0">
             <p className="font-medium text-foreground text-sm truncate">
@@ -205,14 +205,14 @@ const AdminPage = () => {
                         <DollarSign size={18} className="text-green-600" />
                         結帳 ({lane.data.pending.length})
                       </h2>
-                      <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">{lane.data.pending.map(renderOrderCard)}</div>
+                      <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 items-start">{lane.data.pending.map(renderOrderCard)}</div>
                     </div>
                     <div>
                       <h2 className="font-serif-tc font-bold text-foreground mb-3 flex items-center gap-2">
                         <ChefHat size={18} className="text-primary" />
                         出餐完成 ({lane.data.inProgress.length})
                       </h2>
-                      <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">{lane.data.inProgress.map(renderOrderCard)}</div>
+                      <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 items-start">{lane.data.inProgress.map(renderOrderCard)}</div>
                     </div>
                     <div className={showCompleted[lane.label] ? '' : 'w-auto'}>
                       <button
@@ -224,7 +224,7 @@ const AdminPage = () => {
                         結案 ({lane.data.completed.length})
                       </button>
                       {showCompleted[lane.label] && (
-                        <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">{lane.data.completed.map(renderOrderCard)}</div>
+                        <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 items-start">{lane.data.completed.map(renderOrderCard)}</div>
                       )}
                     </div>
                   </div>
