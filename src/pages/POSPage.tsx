@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Plus, Minus, Trash2, Check, Bike, Store } from 'lucide-react';
+import { Plus, Minus, Trash2, Check, Bike, Store, ShoppingBag } from 'lucide-react';
 import AdminNav from '@/components/AdminNav';
 import { menuItems, categories } from '@/data/menu';
 import type { MenuItem, CartItem } from '@/data/menu';
@@ -9,6 +9,7 @@ import { useOrderStore } from '@/store/useOrderStore';
 import { useMenuAvailability } from '@/hooks/useMenuAvailability';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { Sheet, SheetContent } from '@/components/ui/sheet';
 
 type Mode = 'internal' | 'foodpanda';
 
