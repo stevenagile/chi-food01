@@ -1,8 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { useOrderStore } from '@/store/useOrderStore';
+import { supabase } from '@/integrations/supabase/client';
 import { motion } from 'framer-motion';
 import { CheckCircle2, Clock, ChefHat, ArrowLeft } from 'lucide-react';
+import type { CartItem, Order } from '@/data/menu';
 
 const statusConfig = {
   '待確認': { icon: Clock, color: 'text-accent', label: '等待店家確認' },
@@ -11,16 +12,56 @@ const statusConfig = {
   '已取消': { icon: Clock, color: 'text-destructive', label: '訂單已取消' },
 };
 
+type PublicOrder = {
+  id: string;
+  type: Order['type'];
+  tableNumber?: string;
+  items: CartItem[];
+  total: number;
+  status: Order['status'];
+};
+
 const OrderStatusPage = () => {
   const { orderId } = useParams();
-  const { fetchOrders, subscribeToOrders } = useOrderStore();
-  const order = useOrderStore((s) => s.orders.find((o) => o.id === orderId));
+  const [order, setOrder] = useState<PublicOrder | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchOrders();
-    const unsubscribe = subscribeToOrders();
-    return unsubscribe;
-  }, []);
+    let cancelled = false;
+
+    const fetchOrder = async () => {
+      if (!orderId) return;
+      const { data } = await supabase.rpc('get_order_status', { p_id: orderId });
+      if (cancelled) return;
+      const row = Array.isArray(data) ? data[0] : null;
+      if (row) {
+        setOrder({
+          id: row.id,
+          type: row.type as Order['type'],
+          tableNumber: row.table_number ?? undefined,
+          items: (row.items as unknown as CartItem[]) ?? [],
+          total: Number(row.total),
+          status: row.status as Order['status'],
+        });
+      }
+      setLoading(false);
+    };
+
+    fetchOrder();
+    const interval = setInterval(fetchOrder, 5000);
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+    };
+  }, [orderId]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <p className="text-muted-foreground">載入中…</p>
+      </div>
+    );
+  }
 
   if (!order) {
     return (
