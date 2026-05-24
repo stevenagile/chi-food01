@@ -5,7 +5,7 @@ import { useAuth } from '@/hooks/useAuth';
 import type { Order } from '@/data/menu';
 import { menuItems } from '@/data/menu';
 import { AnimatePresence, motion } from 'framer-motion';
-import { LogOut, Trash2, ChefHat, CheckCircle2, Printer, DollarSign, LayoutGrid, AlertTriangle, Pencil } from 'lucide-react';
+import { LogOut, Trash2, ChefHat, CheckCircle2, Printer, DollarSign, LayoutGrid, AlertTriangle, Pencil, Store, Bike } from 'lucide-react';
 import TableManagementPanel from '@/components/TableManagementPanel';
 import AdminNav from '@/components/AdminNav';
 import OrderReceipt from '@/components/OrderReceipt';
@@ -184,40 +184,47 @@ const AdminPage = () => {
             <p className="text-lg">目前沒有訂單</p>
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-8">
             {([
-              { label: '內用', data: dineIn, accent: 'text-primary' },
-              { label: '外帶', data: takeout, accent: 'text-pink-600' },
-            ] as const).map((lane) => (
-              <div key={lane.label}>
-                <h3 className={`font-serif-tc font-bold text-lg mb-3 ${lane.accent}`}>
-                  {lane.label}（{lane.data.pending.length + lane.data.inProgress.length + lane.data.completed.length}）
-                </h3>
-                <div className="grid md:grid-cols-3 gap-5">
-                  <div>
-                    <h2 className="font-serif-tc font-bold text-foreground mb-3 flex items-center gap-2">
-                      <DollarSign size={18} className="text-green-600" />
-                      結帳 ({lane.data.pending.length})
-                    </h2>
-                    <div className="space-y-3">{lane.data.pending.map(renderOrderCard)}</div>
+              { label: '內用', icon: <Store size={22} />, data: dineIn, bar: 'bg-primary', tint: 'bg-primary/5 border-primary/30' },
+              { label: '外帶', icon: <Bike size={22} />, data: takeout, bar: 'bg-pink-600', tint: 'bg-pink-50 border-pink-200' },
+            ] as const).map((lane) => {
+              const laneTotal = lane.data.pending.length + lane.data.inProgress.length + lane.data.completed.length;
+              return (
+                <section key={lane.label} className={`rounded-2xl border-2 ${lane.tint} overflow-hidden shadow-warm`}>
+                  <header className={`${lane.bar} text-white px-5 py-3 flex items-center gap-3`}>
+                    {lane.icon}
+                    <h3 className="font-serif-tc font-bold text-xl tracking-wide">{lane.label}</h3>
+                    <span className="ml-auto bg-white/20 text-white font-bold px-3 py-0.5 rounded-full text-sm">
+                      {laneTotal} 筆
+                    </span>
+                  </header>
+                  <div className="p-4 grid md:grid-cols-3 gap-5">
+                    <div>
+                      <h2 className="font-serif-tc font-bold text-foreground mb-3 flex items-center gap-2">
+                        <DollarSign size={18} className="text-green-600" />
+                        結帳 ({lane.data.pending.length})
+                      </h2>
+                      <div className="space-y-3">{lane.data.pending.map(renderOrderCard)}</div>
+                    </div>
+                    <div>
+                      <h2 className="font-serif-tc font-bold text-foreground mb-3 flex items-center gap-2">
+                        <ChefHat size={18} className="text-primary" />
+                        出餐完成 ({lane.data.inProgress.length})
+                      </h2>
+                      <div className="space-y-3">{lane.data.inProgress.map(renderOrderCard)}</div>
+                    </div>
+                    <div>
+                      <h2 className="font-serif-tc font-bold text-foreground mb-3 flex items-center gap-2">
+                        <CheckCircle2 size={18} className="text-dark-wood" />
+                        結案 ({lane.data.completed.length})
+                      </h2>
+                      <div className="space-y-3">{lane.data.completed.map(renderOrderCard)}</div>
+                    </div>
                   </div>
-                  <div>
-                    <h2 className="font-serif-tc font-bold text-foreground mb-3 flex items-center gap-2">
-                      <ChefHat size={18} className="text-primary" />
-                      出餐完成 ({lane.data.inProgress.length})
-                    </h2>
-                    <div className="space-y-3">{lane.data.inProgress.map(renderOrderCard)}</div>
-                  </div>
-                  <div>
-                    <h2 className="font-serif-tc font-bold text-foreground mb-3 flex items-center gap-2">
-                      <CheckCircle2 size={18} className="text-dark-wood" />
-                      結案 ({lane.data.completed.length})
-                    </h2>
-                    <div className="space-y-3">{lane.data.completed.map(renderOrderCard)}</div>
-                  </div>
-                </div>
-              </div>
-            ))}
+                </section>
+              );
+            })}
           </div>
         )}
       </div>
