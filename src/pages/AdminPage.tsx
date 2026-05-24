@@ -5,7 +5,7 @@ import { useAuth } from '@/hooks/useAuth';
 import type { Order } from '@/data/menu';
 import { menuItems } from '@/data/menu';
 import { AnimatePresence, motion } from 'framer-motion';
-import { LogOut, Trash2, ChefHat, CheckCircle2, Printer, DollarSign, LayoutGrid, AlertTriangle, Pencil, Store, Bike } from 'lucide-react';
+import { LogOut, Trash2, ChefHat, CheckCircle2, Printer, DollarSign, LayoutGrid, AlertTriangle, Pencil, Store, Bike, ChevronDown, ChevronRight } from 'lucide-react';
 import TableManagementPanel from '@/components/TableManagementPanel';
 import AdminNav from '@/components/AdminNav';
 import OrderReceipt from '@/components/OrderReceipt';
@@ -24,6 +24,7 @@ const AdminPage = () => {
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [editOrder, setEditOrder] = useState<Order | null>(null);
   const [view, setView] = useState<'orders' | 'tables'>('orders');
+  const [showCompleted, setShowCompleted] = useState<{ 內用: boolean; 外帶: boolean }>({ 內用: false, 外帶: false });
 
   const LOW_STOCK_THRESHOLD = 5;
   const lowStockItems = useMemo(() => {
@@ -215,11 +216,17 @@ const AdminPage = () => {
                       <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">{lane.data.inProgress.map(renderOrderCard)}</div>
                     </div>
                     <div>
-                      <h2 className="font-serif-tc font-bold text-foreground mb-3 flex items-center gap-2">
+                      <button
+                        onClick={() => setShowCompleted((s) => ({ ...s, [lane.label]: !s[lane.label] }))}
+                        className="w-full mb-3 flex items-center gap-2 font-serif-tc font-bold text-foreground hover:text-primary transition-colors"
+                      >
+                        {showCompleted[lane.label] ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
                         <CheckCircle2 size={18} className="text-dark-wood" />
                         結案 ({lane.data.completed.length})
-                      </h2>
-                      <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">{lane.data.completed.map(renderOrderCard)}</div>
+                      </button>
+                      {showCompleted[lane.label] && (
+                        <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">{lane.data.completed.map(renderOrderCard)}</div>
+                      )}
                     </div>
                   </div>
                 </section>
