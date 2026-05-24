@@ -112,6 +112,7 @@ const InventoryPage = () => {
   const [savingDaily, setSavingDaily] = useState(false);
   const [history, setHistory] = useState<DailyHistory[]>([]);
   const [closing, setClosing] = useState(false);
+  const [setupView, setSetupView] = useState<SetupView>('byMenu');
 
   const [form, setForm] = useState<any>({});
 
