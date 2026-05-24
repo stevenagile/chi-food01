@@ -25,7 +25,8 @@ interface MenuItemIngredient {
   quantity: number;
 }
 
-type Tab = 'today' | 'availability' | 'recipes' | 'ingredients' | 'history';
+type Tab = 'today' | 'availability' | 'setup' | 'history';
+type SetupView = 'byMenu' | 'byIngredient';
 
 interface DailyHistory {
   id: string;
