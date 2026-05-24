@@ -368,7 +368,7 @@ const InventoryPage = () => {
                                 mainIngredients={mainIngredients}
                                 existingIds={itemRecipes.map(r => r.ingredient_id)}
                                 onAdd={async (ingredient_id, quantity) => {
-                                  const { error } = await supabase.from('menu_item_ingredients').insert({ menu_item_id: mi.id, ingredient_id, quantity } as any);
+                                  const { error } = await supabase.from('menu_item_ingredients').insert({ menu_item_id: mi.id, ingredient_id, quantity });
                                   if (error) { toast({ title: '失敗', description: error.message, variant: 'destructive' }); return; }
                                   fetchAll();
                                 }}
