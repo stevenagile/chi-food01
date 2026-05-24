@@ -205,7 +205,7 @@ const AdminPage = () => {
                         <DollarSign size={18} className="text-green-600" />
                         結帳 ({lane.data.pending.length})
                       </h2>
-                      <div className="space-y-3">{lane.data.pending.map(renderOrderCard)}</div>
+                      <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">{lane.data.pending.map(renderOrderCard)}</div>
                     </div>
                     <div>
                       <h2 className="font-serif-tc font-bold text-foreground mb-3 flex items-center gap-2">
