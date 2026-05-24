@@ -62,7 +62,9 @@ const AdminPage = () => {
         <div className="flex items-center justify-between mb-2">
           <div>
             <p className="font-medium text-foreground">
-              {order.type} {order.tableNumber ? `· 桌${order.tableNumber}` : ''}
+              {order.type}
+              {order.type === '外帶' && order.customerName === 'Foodpanda' ? '（Foodpanda）' : ''}
+              {order.tableNumber ? ` · 桌${order.tableNumber}` : ''}
             </p>
             <p className="text-xs text-muted-foreground">
               {new Date(order.createdAt).toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit' })}
