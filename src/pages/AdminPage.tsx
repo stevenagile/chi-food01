@@ -104,17 +104,17 @@ const AdminPage = () => {
             <button onClick={() => setReceiptOrder(order)} className="p-2 text-muted-foreground rounded-xl hover:bg-muted" title="列印">
               <Printer size={16} />
             </button>
-            {!isPaid && order.status !== '已取消' ? (
-              <button onClick={() => handleCheckout(order)} className="px-6 py-2.5 text-base bg-green-600 text-white rounded-xl font-bold flex items-center gap-1.5">
-                <DollarSign size={16} />結帳
-              </button>
-            ) : order.status !== '已完成' && order.status !== '已取消' ? (
-              <button onClick={() => updateOrderStatus(order.id, '已完成')} className="px-6 py-2.5 text-base bg-primary text-primary-foreground rounded-xl font-bold flex items-center gap-1.5">
+            {order.status === '待確認' ? (
+              <button onClick={async () => { if (!isPaid) await updatePaymentStatus(order.id, '已付款', '現金'); await updateOrderStatus(order.id, '製作中'); }} className="px-6 py-2.5 text-base bg-primary text-primary-foreground rounded-xl font-bold flex items-center gap-1.5">
                 <ChefHat size={16} />出餐完成
               </button>
-            ) : (
-              <button onClick={() => archiveOrder(order.id)} className="px-6 py-2.5 text-base bg-dark-wood text-gold rounded-xl font-bold flex items-center gap-1.5">
+            ) : order.status === '製作中' ? (
+              <button onClick={() => updateOrderStatus(order.id, '已完成')} className="px-6 py-2.5 text-base bg-dark-wood text-gold rounded-xl font-bold flex items-center gap-1.5">
                 <CheckCircle2 size={16} />結案
+              </button>
+            ) : (
+              <button onClick={() => archiveOrder(order.id)} className="px-6 py-2.5 text-base bg-muted text-foreground rounded-xl font-bold flex items-center gap-1.5">
+                <CheckCircle2 size={16} />封存
               </button>
             )}
         </div>
