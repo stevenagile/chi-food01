@@ -5,7 +5,7 @@ import { useAuth } from '@/hooks/useAuth';
 import type { Order } from '@/data/menu';
 import { menuItems } from '@/data/menu';
 import { AnimatePresence, motion } from 'framer-motion';
-import { LogOut, Trash2, ChefHat, CheckCircle2, Printer, DollarSign, LayoutGrid, AlertTriangle, Pencil } from 'lucide-react';
+import { LogOut, Trash2, ChefHat, CheckCircle2, Printer, DollarSign, LayoutGrid, AlertTriangle, Pencil, Store, Bike } from 'lucide-react';
 import TableManagementPanel from '@/components/TableManagementPanel';
 import AdminNav from '@/components/AdminNav';
 import OrderReceipt from '@/components/OrderReceipt';
