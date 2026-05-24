@@ -11,10 +11,8 @@ export const useMenuAvailability = () => {
   const [loading, setLoading] = useState(true);
 
   const fetchAvailability = async () => {
-    // Get all recipe mappings with ingredient stock
-    const { data, error } = await supabase
-      .from('menu_item_ingredients')
-      .select('menu_item_id, quantity, ingredient_id, ingredients(current_stock)');
+    // Public-safe RPC: returns only menu_item_id + recipe_qty + current_stock
+    const { data, error } = await supabase.rpc('get_menu_availability');
 
     if (error || !data) {
       setLoading(false);
@@ -28,9 +26,7 @@ export const useMenuAvailability = () => {
     for (const row of data) {
       const mid = row.menu_item_id;
       if (!grouped[mid]) grouped[mid] = [];
-      const ingRel = (row as { ingredients: { current_stock: number } | null }).ingredients;
-      const stock = ingRel?.current_stock ?? 0;
-      grouped[mid].push({ recipeQty: row.quantity, stock });
+      grouped[mid].push({ recipeQty: Number(row.recipe_qty), stock: Number(row.current_stock) });
     }
 
     // For items with recipes, calc min servings
