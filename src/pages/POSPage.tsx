@@ -56,7 +56,19 @@ const POSPage = () => {
         selectedOptions[opt.name] = opt.choices[0].label;
       }
     }
-    setCart((prev) => [...prev, { menuItem: item, quantity: 1, selectedOptions }]);
+    setCart((prev) => {
+      const idx = prev.findIndex(
+        (it) =>
+          it.menuItem.id === item.id &&
+          JSON.stringify(it.selectedOptions) === JSON.stringify(selectedOptions)
+      );
+      if (idx >= 0) {
+        const next = [...prev];
+        next[idx] = { ...next[idx], quantity: next[idx].quantity + 1 };
+        return next;
+      }
+      return [...prev, { menuItem: item, quantity: 1, selectedOptions }];
+    });
   };
 
   const updateQty = (idx: number, delta: number) => {
