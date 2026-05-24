@@ -105,7 +105,11 @@ const AdminPage = () => {
               <Printer size={16} />
             </button>
             {order.status === '待確認' ? (
-              <button onClick={async () => { if (!isPaid) await updatePaymentStatus(order.id, '已付款', '現金'); await updateOrderStatus(order.id, '製作中'); }} className="px-6 py-2.5 text-base bg-primary text-primary-foreground rounded-xl font-bold flex items-center gap-1.5">
+              <button onClick={async () => {
+                if (!isPaid) await updatePaymentStatus(order.id, '已付款', '現金');
+                // 外帶不佔桌，跳過「製作中」直接到「結案」
+                await updateOrderStatus(order.id, order.type === '外帶' ? '已完成' : '製作中');
+              }} className="px-6 py-2.5 text-base bg-primary text-primary-foreground rounded-xl font-bold flex items-center gap-1.5">
                 <ChefHat size={16} />出餐完成
               </button>
             ) : order.status === '製作中' ? (
