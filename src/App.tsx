@@ -15,6 +15,7 @@ import POSPage from "./pages/POSPage";
 import ManualPage from "./pages/ManualPage";
 import TableQRPage from "./pages/TableQRPage";
 import AccountingPage from "./pages/AccountingPage";
+import ReportsPage from "./pages/ReportsPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -35,6 +36,7 @@ const App = () => (
             <Route path="/admin/inventory" element={<ProtectedRoute><InventoryPage /></ProtectedRoute>} />
             <Route path="/admin/stock" element={<Navigate to="/admin/inventory" replace />} />
             <Route path="/admin/pos" element={<ProtectedRoute><POSPage /></ProtectedRoute>} />
+            <Route path="/admin/reports" element={<ProtectedRoute><ReportsPage /></ProtectedRoute>} />
             <Route path="/admin/qr-codes" element={<ProtectedRoute><TableQRPage /></ProtectedRoute>} />
             <Route path="/admin/manual" element={<ProtectedRoute><ManualPage /></ProtectedRoute>} />
             <Route path="/admin/accounting" element={<ProtectedRoute><AccountingPage /></ProtectedRoute>} />
