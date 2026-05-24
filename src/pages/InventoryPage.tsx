@@ -78,7 +78,7 @@ const InventoryPage = () => {
   const [filterCat, setFilterCat] = useState<string>('all');
   const [showForm, setShowForm] = useState(false);
   const [editItem, setEditItem] = useState<Ingredient | null>(null);
-  const [form, setForm] = useState<Partial<Ingredient>>({});
+  const [form, setForm] = useState<Record<string, string | number>>({});
   const [dailyStock, setDailyStock] = useState<Record<string, string>>({});
   const [savingDaily, setSavingDaily] = useState(false);
   const [closing, setClosing] = useState(false);
