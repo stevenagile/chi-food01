@@ -215,21 +215,18 @@ export type Database = {
           created_at: string
           display_name: string
           id: string
-          role: string
           updated_at: string
         }
         Insert: {
           created_at?: string
           display_name?: string
           id: string
-          role?: string
           updated_at?: string
         }
         Update: {
           created_at?: string
           display_name?: string
           id?: string
-          role?: string
           updated_at?: string
         }
         Relationships: []
@@ -427,7 +424,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      archive_all_orders: { Args: never; Returns: undefined }
+      archive_all_orders: { Args: never; Returns: Json }
       check_ingredient_availability: { Args: { p_items: Json }; Returns: Json }
       close_daily_stats: { Args: never; Returns: Json }
       has_role: { Args: { _role: string; _user_id: string }; Returns: boolean }
