@@ -131,8 +131,6 @@ const AdminPage = () => {
               </button>
             )}
         </div>
-        <OrderStatusLog orderId={order.id} />
-      </div>
       </div>
     );
   };
