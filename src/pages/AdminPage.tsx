@@ -130,9 +130,8 @@ const AdminPage = () => {
                 <CheckCircle2 size={13} />封存
               </button>
             )}
+          </div>
         </div>
-        <OrderStatusLog orderId={order.id} />
-      </div>
       </div>
     );
   };
