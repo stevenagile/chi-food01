@@ -79,7 +79,7 @@ export const useOrderStore = create<OrderState>((set, get) => ({
   },
 
   updateOrderStatus: async (id, status) => {
-    const updateData: any = { status };
+    const updateData: TablesUpdate<'orders'> = { status };
     const now = new Date().toISOString();
     if (status === '製作中') {
       updateData.cooking_at = now;
