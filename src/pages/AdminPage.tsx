@@ -205,14 +205,14 @@ const AdminPage = () => {
                         <DollarSign size={18} className="text-green-600" />
                         結帳 ({lane.data.pending.length})
                       </h2>
-                      <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">{lane.data.pending.map(renderOrderCard)}</div>
+                      <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 items-start">{lane.data.pending.map(renderOrderCard)}</div>
                     </div>
                     <div>
                       <h2 className="font-serif-tc font-bold text-foreground mb-3 flex items-center gap-2">
                         <ChefHat size={18} className="text-primary" />
                         出餐完成 ({lane.data.inProgress.length})
                       </h2>
-                      <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">{lane.data.inProgress.map(renderOrderCard)}</div>
+                      <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 items-start">{lane.data.inProgress.map(renderOrderCard)}</div>
                     </div>
                     <div className={showCompleted[lane.label] ? '' : 'w-auto'}>
                       <button
@@ -224,7 +224,7 @@ const AdminPage = () => {
                         結案 ({lane.data.completed.length})
                       </button>
                       {showCompleted[lane.label] && (
-                        <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">{lane.data.completed.map(renderOrderCard)}</div>
+                        <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 items-start">{lane.data.completed.map(renderOrderCard)}</div>
                       )}
                     </div>
                   </div>
