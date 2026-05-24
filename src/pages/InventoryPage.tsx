@@ -279,8 +279,7 @@ const InventoryPage = () => {
   const tabs: { key: Tab; label: string; icon: any }[] = [
     { key: 'today', label: '今日備料', icon: CalendarCheck },
     { key: 'availability', label: '可出份數', icon: Calculator },
-    { key: 'recipes', label: '食譜配方', icon: BookOpen },
-    { key: 'ingredients', label: '原物料設定', icon: Package },
+    { key: 'setup', label: '食材與配方', icon: BookOpen },
     { key: 'history', label: '歷史紀錄', icon: History },
   ];
 
