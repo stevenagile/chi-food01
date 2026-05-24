@@ -51,9 +51,15 @@ const AdminPage = () => {
     toast({ title: '已結帳', description: `$${order.total} · 進入製作中` });
   };
 
-  const pendingOrders = useMemo(() => orders.filter((o) => o.status === '待確認'), [orders]);
-  const inProgressOrders = useMemo(() => orders.filter((o) => o.status === '製作中'), [orders]);
-  const completedOrders = useMemo(() => orders.filter((o) => o.status === '已完成' || o.status === '已取消'), [orders]);
+  const dineInOrders = useMemo(() => orders.filter((o) => o.type === '內用'), [orders]);
+  const takeoutOrders = useMemo(() => orders.filter((o) => o.type === '外帶'), [orders]);
+  const splitByStatus = (list: Order[]) => ({
+    pending: list.filter((o) => o.status === '待確認'),
+    inProgress: list.filter((o) => o.status === '製作中'),
+    completed: list.filter((o) => o.status === '已完成' || o.status === '已取消'),
+  });
+  const dineIn = useMemo(() => splitByStatus(dineInOrders), [dineInOrders]);
+  const takeout = useMemo(() => splitByStatus(takeoutOrders), [takeoutOrders]);
 
   const renderOrderCard = (order: Order) => {
     const isPaid = order.paymentStatus === '已付款';
@@ -178,28 +184,40 @@ const AdminPage = () => {
             <p className="text-lg">目前沒有訂單</p>
           </div>
         ) : (
-          <div className="grid md:grid-cols-3 gap-5">
-            <div>
-              <h2 className="font-serif-tc font-bold text-foreground mb-3 flex items-center gap-2">
-                <DollarSign size={18} className="text-green-600" />
-                結帳 ({pendingOrders.length})
-              </h2>
-              <div className="space-y-3">{pendingOrders.map(renderOrderCard)}</div>
-            </div>
-            <div>
-              <h2 className="font-serif-tc font-bold text-foreground mb-3 flex items-center gap-2">
-                <ChefHat size={18} className="text-primary" />
-                出餐完成 ({inProgressOrders.length})
-              </h2>
-              <div className="space-y-3">{inProgressOrders.map(renderOrderCard)}</div>
-            </div>
-            <div>
-              <h2 className="font-serif-tc font-bold text-foreground mb-3 flex items-center gap-2">
-                <CheckCircle2 size={18} className="text-dark-wood" />
-                結案 ({completedOrders.length})
-              </h2>
-              <div className="space-y-3">{completedOrders.map(renderOrderCard)}</div>
-            </div>
+          <div className="space-y-6">
+            {([
+              { label: '內用', data: dineIn, accent: 'text-primary' },
+              { label: '外帶', data: takeout, accent: 'text-pink-600' },
+            ] as const).map((lane) => (
+              <div key={lane.label}>
+                <h3 className={`font-serif-tc font-bold text-lg mb-3 ${lane.accent}`}>
+                  {lane.label}（{lane.data.pending.length + lane.data.inProgress.length + lane.data.completed.length}）
+                </h3>
+                <div className="grid md:grid-cols-3 gap-5">
+                  <div>
+                    <h2 className="font-serif-tc font-bold text-foreground mb-3 flex items-center gap-2">
+                      <DollarSign size={18} className="text-green-600" />
+                      結帳 ({lane.data.pending.length})
+                    </h2>
+                    <div className="space-y-3">{lane.data.pending.map(renderOrderCard)}</div>
+                  </div>
+                  <div>
+                    <h2 className="font-serif-tc font-bold text-foreground mb-3 flex items-center gap-2">
+                      <ChefHat size={18} className="text-primary" />
+                      出餐完成 ({lane.data.inProgress.length})
+                    </h2>
+                    <div className="space-y-3">{lane.data.inProgress.map(renderOrderCard)}</div>
+                  </div>
+                  <div>
+                    <h2 className="font-serif-tc font-bold text-foreground mb-3 flex items-center gap-2">
+                      <CheckCircle2 size={18} className="text-dark-wood" />
+                      結案 ({lane.data.completed.length})
+                    </h2>
+                    <div className="space-y-3">{lane.data.completed.map(renderOrderCard)}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>
