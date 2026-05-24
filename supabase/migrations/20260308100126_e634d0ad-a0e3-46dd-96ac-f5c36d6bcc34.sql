@@ -1,1 +1,0 @@
-ALTER TABLE public.orders ADD COLUMN guest_count integer DEFAULT null;
