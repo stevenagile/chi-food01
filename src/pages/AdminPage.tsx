@@ -24,6 +24,7 @@ const AdminPage = () => {
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [editOrder, setEditOrder] = useState<Order | null>(null);
   const [view, setView] = useState<'orders' | 'tables'>('orders');
+  const [showCompleted, setShowCompleted] = useState<{ 內用: boolean; 外帶: boolean }>({ 內用: false, 外帶: false });
 
   const LOW_STOCK_THRESHOLD = 5;
   const lowStockItems = useMemo(() => {
