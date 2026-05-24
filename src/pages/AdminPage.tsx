@@ -219,7 +219,7 @@ const AdminPage = () => {
                         <CheckCircle2 size={18} className="text-dark-wood" />
                         結案 ({lane.data.completed.length})
                       </h2>
-                      <div className="space-y-3">{lane.data.completed.map(renderOrderCard)}</div>
+                      <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">{lane.data.completed.map(renderOrderCard)}</div>
                     </div>
                   </div>
                 </section>
