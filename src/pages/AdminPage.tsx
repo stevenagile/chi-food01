@@ -216,11 +216,17 @@ const AdminPage = () => {
                       <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">{lane.data.inProgress.map(renderOrderCard)}</div>
                     </div>
                     <div>
-                      <h2 className="font-serif-tc font-bold text-foreground mb-3 flex items-center gap-2">
+                      <button
+                        onClick={() => setShowCompleted((s) => ({ ...s, [lane.label]: !s[lane.label] }))}
+                        className="w-full mb-3 flex items-center gap-2 font-serif-tc font-bold text-foreground hover:text-primary transition-colors"
+                      >
+                        {showCompleted[lane.label] ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
                         <CheckCircle2 size={18} className="text-dark-wood" />
                         結案 ({lane.data.completed.length})
-                      </h2>
-                      <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">{lane.data.completed.map(renderOrderCard)}</div>
+                      </button>
+                      {showCompleted[lane.label] && (
+                        <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">{lane.data.completed.map(renderOrderCard)}</div>
+                      )}
                     </div>
                   </div>
                 </section>
