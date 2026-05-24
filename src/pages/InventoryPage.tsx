@@ -492,137 +492,142 @@ const InventoryPage = () => {
               </button>
             </div>
 
-            {setupView === 'byMenu' && (<>
-        {false && tab === 'recipes' && (
-            <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 rounded-xl p-3 mb-4 text-xs text-amber-800 dark:text-amber-200">
-              📋 BOM 主原料配方：每個品項只記錄主原料（雞、鴨、飯、小菜本體等），副料／調味料不列入。可在下方直接編輯所有品項。
-            </div>
+            {/* 視角 A：依菜單配方 */}
+            {setupView === 'byMenu' && (
+              <>
+                <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 rounded-xl p-3 mb-4 text-xs text-amber-800 dark:text-amber-200">
+                  📋 為每道菜設定 BOM 主原料配方（雞、鴨、飯、小菜本體等）。沒有看到要用的原料？切換到「原物料清單」新增。
+                </div>
 
-            {mainIngredients.length === 0 && (
-              <p className="mb-4 text-xs text-amber-600">尚無主原料，請先到「原物料設定」分頁新增分類為「主料」或「主食」的項目。</p>
+                {mainIngredients.length === 0 && (
+                  <p className="mb-4 text-xs text-amber-600">尚無主原料，請先到「原物料清單」分頁新增分類為「主料」或「主食」的項目。</p>
+                )}
+
+                <div className="space-y-6">
+                  {['platter', 'rice', 'side', 'drink', 'weekend'].map(catId => {
+                    const catItems = menuItems.filter(m => m.category === catId);
+                    if (catItems.length === 0) return null;
+                    const catName = { platter: '切盤', rice: '飯類', side: '小菜', drink: '飲品', weekend: '假日限定' }[catId as string];
+                    return (
+                      <div key={catId}>
+                        <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">{catName}</h3>
+                        <div className="space-y-3">
+                          {catItems.map(mi => {
+                            const itemRecipes = recipes.filter(r => r.menu_item_id === mi.id);
+                            return (
+                              <div key={mi.id} className="bg-card rounded-xl border border-border p-3">
+                                <div className="flex items-center justify-between mb-2">
+                                  <div className="font-medium text-foreground">{mi.name}</div>
+                                  <span className={`text-xs px-2 py-0.5 rounded-full ${itemRecipes.length > 0 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300' : 'bg-muted text-muted-foreground'}`}>
+                                    {itemRecipes.length > 0 ? `${itemRecipes.length} 種主原料` : '未設定'}
+                                  </span>
+                                </div>
+
+                                {itemRecipes.length > 0 && (
+                                  <div className="space-y-1.5 mb-2">
+                                    {itemRecipes.map(r => {
+                                      const ing = ingredients.find(i => i.id === r.ingredient_id);
+                                      return (
+                                        <div key={r.id} className="flex items-center gap-2 bg-background rounded-lg border border-border px-2 py-1.5">
+                                          <span className="flex-1 text-sm text-foreground truncate">{ing?.name || '未知'}</span>
+                                          <input
+                                            type="number"
+                                            step="0.01"
+                                            defaultValue={r.quantity}
+                                            onBlur={e => {
+                                              const v = Number(e.target.value);
+                                              if (v !== r.quantity) handleUpdateRecipeQty(r.id, v);
+                                            }}
+                                            className="w-16 px-2 py-1 rounded-md border border-border bg-card text-sm text-right"
+                                          />
+                                          <span className="text-xs text-muted-foreground w-6">{ing?.unit || ''}</span>
+                                          <button
+                                            onClick={() => handleDeleteRecipeIngredient(r.id)}
+                                            className="p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-950 rounded-md"
+                                          >
+                                            <Trash2 size={14} />
+                                          </button>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                )}
+
+                                <InlineAddRecipe
+                                  menuItemId={mi.id}
+                                  mainIngredients={mainIngredients}
+                                  existingIds={itemRecipes.map(r => r.ingredient_id)}
+                                  onAdd={async (ingredient_id, quantity) => {
+                                    const { error } = await supabase.from('menu_item_ingredients').insert({
+                                      menu_item_id: mi.id,
+                                      ingredient_id,
+                                      quantity,
+                                    } as any);
+                                    if (error) {
+                                      toast({ title: '新增失敗', description: error.message, variant: 'destructive' });
+                                      return;
+                                    }
+                                    toast({ title: '已新增', description: mi.name });
+                                    fetchAll();
+                                  }}
+                                />
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
             )}
 
-            <div className="space-y-6">
-              {['platter', 'rice', 'side', 'drink', 'weekend'].map(catId => {
-                const catItems = menuItems.filter(m => m.category === catId);
-                if (catItems.length === 0) return null;
-                const catName = { platter: '切盤', rice: '飯類', side: '小菜', drink: '飲品', weekend: '假日限定' }[catId as string];
-                return (
-                  <div key={catId}>
-                    <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">{catName}</h3>
-                    <div className="space-y-3">
-                      {catItems.map(mi => {
-                        const itemRecipes = recipes.filter(r => r.menu_item_id === mi.id);
-                        return (
-                          <div key={mi.id} className="bg-card rounded-xl border border-border p-3">
-                            <div className="flex items-center justify-between mb-2">
-                              <div className="font-medium text-foreground">{mi.name}</div>
-                              <span className={`text-xs px-2 py-0.5 rounded-full ${itemRecipes.length > 0 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300' : 'bg-muted text-muted-foreground'}`}>
-                                {itemRecipes.length > 0 ? `${itemRecipes.length} 種主原料` : '未設定'}
-                              </span>
-                            </div>
-
-                            {itemRecipes.length > 0 && (
-                              <div className="space-y-1.5 mb-2">
-                                {itemRecipes.map(r => {
-                                  const ing = ingredients.find(i => i.id === r.ingredient_id);
-                                  return (
-                                    <div key={r.id} className="flex items-center gap-2 bg-background rounded-lg border border-border px-2 py-1.5">
-                                      <span className="flex-1 text-sm text-foreground truncate">{ing?.name || '未知'}</span>
-                                      <input
-                                        type="number"
-                                        step="0.01"
-                                        defaultValue={r.quantity}
-                                        onBlur={e => {
-                                          const v = Number(e.target.value);
-                                          if (v !== r.quantity) handleUpdateRecipeQty(r.id, v);
-                                        }}
-                                        className="w-16 px-2 py-1 rounded-md border border-border bg-card text-sm text-right"
-                                      />
-                                      <span className="text-xs text-muted-foreground w-6">{ing?.unit || ''}</span>
-                                      <button
-                                        onClick={() => handleDeleteRecipeIngredient(r.id)}
-                                        className="p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-950 rounded-md"
-                                      >
-                                        <Trash2 size={14} />
-                                      </button>
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            )}
-
-                            <InlineAddRecipe
-                              menuItemId={mi.id}
-                              mainIngredients={mainIngredients}
-                              existingIds={itemRecipes.map(r => r.ingredient_id)}
-                              onAdd={async (ingredient_id, quantity) => {
-                                const { error } = await supabase.from('menu_item_ingredients').insert({
-                                  menu_item_id: mi.id,
-                                  ingredient_id,
-                                  quantity,
-                                } as any);
-                                if (error) {
-                                  toast({ title: '新增失敗', description: error.message, variant: 'destructive' });
-                                  return;
-                                }
-                                toast({ title: '已新增', description: mi.name });
-                                fetchAll();
-                              }}
-                            />
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </>
-        )}
-
-        {/* === Ingredients Setup === */}
-        {tab === 'ingredients' && (
-          <>
-            <div className="bg-card border border-border rounded-xl p-3 mb-4 text-xs text-muted-foreground">
-              管理所有可用的原物料（含分類與單位）。只有「主料」與「主食」會出現在「今日備料」與「食譜配方」。日常作業不需進來，這裡是初次設定／新增食材時用。
-            </div>
-            <div className="flex items-center gap-2 mb-4">
-              <div className="relative flex-1">
-                <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                <input
-                  value={search} onChange={e => setSearch(e.target.value)}
-                  placeholder="搜尋原物料..."
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-border bg-card text-sm"
-                />
-              </div>
-              <button onClick={openAdd} className="px-4 py-2 bg-primary text-primary-foreground rounded-xl text-sm font-bold flex items-center gap-1">
-                <Plus size={16} />新增
-              </button>
-            </div>
-            <div className="space-y-2">
-              {filtered.map(item => (
-                <div key={item.id} className="bg-card rounded-xl border border-border p-3 flex items-center justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <span className={`text-xs px-2 py-0.5 rounded ${MAIN_CATEGORIES.includes(item.category) ? 'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300' : 'bg-muted'}`}>{item.category}</span>
-                      <span className="font-medium text-foreground">{item.name}</span>
-                    </div>
-                    <div className="flex gap-4 mt-1 text-xs text-muted-foreground">
-                      <span>單位: {item.unit}</span>
-                      <span>今日剩餘: <b className="text-foreground">{item.current_stock}</b> {item.unit}</span>
-                    </div>
-                  </div>
-                  <div className="flex gap-1">
-                    <button onClick={() => openEdit(item)} className="p-2 text-muted-foreground hover:bg-muted rounded-lg"><Pencil size={14} /></button>
-                    <button onClick={() => handleDeleteIngredient(item.id)} className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-950 rounded-lg"><Trash2 size={14} /></button>
-                  </div>
+            {/* 視角 B：原物料清單 */}
+            {setupView === 'byIngredient' && (
+              <>
+                <div className="bg-card border border-border rounded-xl p-3 mb-4 text-xs text-muted-foreground">
+                  管理所有可用的原物料（含分類與單位）。只有「主料」與「主食」會出現在「今日備料」與菜單配方中。
                 </div>
-              ))}
-              {filtered.length === 0 && <p className="text-center py-10 text-muted-foreground">尚無原物料資料</p>}
-            </div>
+                <div className="relative mb-4">
+                  <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                  <input
+                    value={search} onChange={e => setSearch(e.target.value)}
+                    placeholder="搜尋原物料..."
+                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-border bg-card text-sm"
+                  />
+                </div>
+                <div className="space-y-2">
+                  {filtered.map(item => {
+                    const usedByCount = recipes.filter(r => r.ingredient_id === item.id).length;
+                    return (
+                      <div key={item.id} className="bg-card rounded-xl border border-border p-3 flex items-center justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className={`text-xs px-2 py-0.5 rounded ${MAIN_CATEGORIES.includes(item.category) ? 'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300' : 'bg-muted'}`}>{item.category}</span>
+                            <span className="font-medium text-foreground">{item.name}</span>
+                            {usedByCount > 0 && (
+                              <span className="text-xs text-muted-foreground">· 用於 {usedByCount} 道菜</span>
+                            )}
+                          </div>
+                          <div className="flex gap-4 mt-1 text-xs text-muted-foreground">
+                            <span>單位: {item.unit}</span>
+                            <span>今日剩餘: <b className="text-foreground">{item.current_stock}</b> {item.unit}</span>
+                          </div>
+                        </div>
+                        <div className="flex gap-1">
+                          <button onClick={() => openEdit(item)} className="p-2 text-muted-foreground hover:bg-muted rounded-lg"><Pencil size={14} /></button>
+                          <button onClick={() => handleDeleteIngredient(item.id)} className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-950 rounded-lg"><Trash2 size={14} /></button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                  {filtered.length === 0 && <p className="text-center py-10 text-muted-foreground">尚無原物料資料</p>}
+                </div>
+              </>
+            )}
           </>
         )}
+
 
         {/* === History Tab === */}
         {tab === 'history' && (
