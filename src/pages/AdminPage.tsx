@@ -64,69 +64,69 @@ const AdminPage = () => {
   const renderOrderCard = (order: Order) => {
     const isPaid = order.paymentStatus === '已付款';
     return (
-      <div key={order.id} className="bg-card rounded-xl border border-border p-4 shadow-warm">
-        <div className="flex items-center justify-between mb-2">
-          <div>
-            <p className="font-medium text-foreground">
+      <div key={order.id} className="bg-card rounded-lg border border-border p-2.5 shadow-warm text-sm">
+        <div className="flex items-center justify-between mb-1.5 gap-2">
+          <div className="min-w-0">
+            <p className="font-medium text-foreground text-sm truncate">
               {order.type}
               {order.type === '外帶' && order.customerName === 'Foodpanda' ? '（Foodpanda）' : ''}
               {order.tableNumber ? ` · 桌${order.tableNumber}` : ''}
             </p>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-[10px] text-muted-foreground">
               {new Date(order.createdAt).toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit' })}
             </p>
           </div>
-          <span className={`text-xs px-2 py-0.5 rounded-full ${isPaid ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-600'}`}>
-            {isPaid ? `已付 · ${order.paymentMethod}` : '未付'}
+          <span className={`text-[10px] px-1.5 py-0.5 rounded-full whitespace-nowrap ${isPaid ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-600'}`}>
+            {isPaid ? '已付' : '未付'}
           </span>
         </div>
 
-        <div className="space-y-0.5 mb-3">
+        <div className="space-y-0.5 mb-2">
           {order.items.map((item, i) => {
             const stock = availability[item.menuItem.id];
             const isLow = stock !== undefined && stock !== Infinity && stock <= LOW_STOCK_THRESHOLD;
             const soldOut = stock !== undefined && stock <= 0;
             return (
-              <div key={i} className="flex justify-between text-sm items-center">
-                <span className="flex items-center gap-1.5">
-                  {item.menuItem.name} ×{item.quantity}
+              <div key={i} className="flex justify-between text-xs items-center gap-1">
+                <span className="flex items-center gap-1 min-w-0">
+                  <span className="truncate">{item.menuItem.name} ×{item.quantity}</span>
                   {soldOut && (
-                    <span className="text-[10px] px-1.5 py-0.5 bg-destructive text-destructive-foreground rounded font-bold">售完</span>
+                    <span className="text-[9px] px-1 py-0.5 bg-destructive text-destructive-foreground rounded font-bold shrink-0">售完</span>
                   )}
                   {!soldOut && isLow && (
-                    <span className="text-[10px] px-1.5 py-0.5 bg-orange-100 text-orange-700 rounded font-medium">剩{stock}份</span>
+                    <span className="text-[9px] px-1 py-0.5 bg-orange-100 text-orange-700 rounded font-medium shrink-0">剩{stock}</span>
                   )}
                 </span>
-                <span className="text-muted-foreground">${item.menuItem.price * item.quantity}</span>
+                <span className="text-muted-foreground shrink-0">${item.menuItem.price * item.quantity}</span>
               </div>
             );
           })}
         </div>
 
-        <div className="flex items-center justify-between border-t border-border pt-3">
-          <span className="font-bold text-primary text-lg">${order.total}</span>
-          <div className="flex items-center gap-2">
-            <button onClick={() => setEditOrder(order)} className="p-2 text-muted-foreground rounded-xl hover:bg-muted" title="編輯訂單">
-              <Pencil size={16} />
+        <div className="flex items-center justify-between border-t border-border pt-2 gap-1.5 flex-wrap">
+          <span className="font-bold text-primary text-base">${order.total}</span>
+          <div className="flex items-center gap-1">
+            <button onClick={() => setEditOrder(order)} className="p-1.5 text-muted-foreground rounded-lg hover:bg-muted" title="編輯訂單">
+              <Pencil size={14} />
             </button>
-            <button onClick={() => setReceiptOrder(order)} className="p-2 text-muted-foreground rounded-xl hover:bg-muted" title="列印">
-              <Printer size={16} />
+            <button onClick={() => setReceiptOrder(order)} className="p-1.5 text-muted-foreground rounded-lg hover:bg-muted" title="列印">
+              <Printer size={14} />
             </button>
             {order.status === '待確認' ? (
               <button onClick={async () => {
                 if (!isPaid) await updatePaymentStatus(order.id, '已付款', '現金');
                 // 外帶不佔桌，跳過「製作中」直接到「結案」
                 await updateOrderStatus(order.id, order.type === '外帶' ? '已完成' : '製作中');
-              }} className="px-6 py-2.5 text-base bg-primary text-primary-foreground rounded-xl font-bold flex items-center gap-1.5">
-                <ChefHat size={16} />出餐完成
+              }} className="px-2.5 py-1.5 text-xs bg-primary text-primary-foreground rounded-lg font-bold flex items-center gap-1">
+                <ChefHat size={13} />出餐完成
               </button>
             ) : order.status === '製作中' ? (
-              <button onClick={() => updateOrderStatus(order.id, '已完成')} className="px-6 py-2.5 text-base bg-dark-wood text-gold rounded-xl font-bold flex items-center gap-1.5">
-                <CheckCircle2 size={16} />結案
+              <button onClick={() => updateOrderStatus(order.id, '已完成')} className="px-2.5 py-1.5 text-xs bg-dark-wood text-gold rounded-lg font-bold flex items-center gap-1">
+                <CheckCircle2 size={13} />結案
               </button>
             ) : (
-              <button onClick={() => archiveOrder(order.id)} className="px-6 py-2.5 text-base bg-muted text-foreground rounded-xl font-bold flex items-center gap-1.5">
-                <CheckCircle2 size={16} />封存
+              <button onClick={() => archiveOrder(order.id)} className="px-2.5 py-1.5 text-xs bg-muted text-foreground rounded-lg font-bold flex items-center gap-1">
+                <CheckCircle2 size={13} />封存
               </button>
             )}
         </div>
@@ -205,21 +205,21 @@ const AdminPage = () => {
                         <DollarSign size={18} className="text-green-600" />
                         結帳 ({lane.data.pending.length})
                       </h2>
-                      <div className="space-y-3">{lane.data.pending.map(renderOrderCard)}</div>
+                      <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">{lane.data.pending.map(renderOrderCard)}</div>
                     </div>
                     <div>
                       <h2 className="font-serif-tc font-bold text-foreground mb-3 flex items-center gap-2">
                         <ChefHat size={18} className="text-primary" />
                         出餐完成 ({lane.data.inProgress.length})
                       </h2>
-                      <div className="space-y-3">{lane.data.inProgress.map(renderOrderCard)}</div>
+                      <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">{lane.data.inProgress.map(renderOrderCard)}</div>
                     </div>
                     <div>
                       <h2 className="font-serif-tc font-bold text-foreground mb-3 flex items-center gap-2">
                         <CheckCircle2 size={18} className="text-dark-wood" />
                         結案 ({lane.data.completed.length})
                       </h2>
-                      <div className="space-y-3">{lane.data.completed.map(renderOrderCard)}</div>
+                      <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">{lane.data.completed.map(renderOrderCard)}</div>
                     </div>
                   </div>
                 </section>
