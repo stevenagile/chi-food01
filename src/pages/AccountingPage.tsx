@@ -3,20 +3,21 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Search, Download, DollarSign, ShoppingBag, TrendingUp, Calendar } from 'lucide-react';
 import AdminNav from '@/components/AdminNav';
-import type { Order } from '@/data/menu';
+import type { Order, CartItem } from '@/data/menu';
+import type { Tables } from '@/integrations/supabase/types';
 
-const mapRow = (row: any): Order => ({
+const mapRow = (row: Tables<'orders'>): Order => ({
   id: row.id,
-  type: row.type,
+  type: row.type as Order['type'],
   tableNumber: row.table_number ?? undefined,
-  items: (row.items as any[]) ?? [],
+  items: (row.items as unknown as CartItem[]) ?? [],
   total: row.total,
-  status: row.status,
+  status: row.status as Order['status'],
   createdAt: new Date(row.created_at),
   customerName: row.customer_name ?? undefined,
   customerPhone: row.customer_phone ?? undefined,
-  paymentStatus: row.payment_status ?? '未付款',
-  paymentMethod: row.payment_method ?? null,
+  paymentStatus: (row.payment_status as Order['paymentStatus']) ?? '未付款',
+  paymentMethod: (row.payment_method as Order['paymentMethod']) ?? null,
   paidAt: row.paid_at ? new Date(row.paid_at) : null,
   guestCount: row.guest_count ?? null,
   cookingAt: row.cooking_at ? new Date(row.cooking_at) : null,
