@@ -133,7 +133,7 @@ export const useOrderStore = create<OrderState>((set, get) => ({
   },
 
   updatePaymentStatus: async (id, paymentStatus, paymentMethod) => {
-    const updateData: any = {
+    const updateData: TablesUpdate<'orders'> = {
       payment_status: paymentStatus,
       payment_method: paymentMethod ?? null,
     };
