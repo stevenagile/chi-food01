@@ -33,7 +33,7 @@ const OrderReceipt = ({ order, onClose }: OrderReceiptProps) => {
       </head>
       <body>
         ${content.innerHTML}
-        <script>window.onload = () => { window.print(); window.close(); }<\/script>
+        <script>window.onload = () => { window.print(); window.close(); }</script>
       </body>
       </html>
     `);
