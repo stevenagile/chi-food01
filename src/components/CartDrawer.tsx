@@ -29,10 +29,8 @@ const CartDrawer = ({ open, onClose }: CartDrawerProps) => {
   const [customerPhone, setCustomerPhone] = useState('');
 
   const handleSubmit = () => {
-    if (orderType === '內用' && !tableNumber) {
-      toast.error('請輸入桌號');
-      return;
-    }
+    // 桌號為選填
+
     if (items.length === 0) {
       toast.error('購物車是空的');
       return;

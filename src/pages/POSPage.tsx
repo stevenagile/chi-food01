@@ -56,19 +56,7 @@ const POSPage = () => {
         selectedOptions[opt.name] = opt.choices[0].label;
       }
     }
-    setCart((prev) => {
-      const idx = prev.findIndex(
-        (p) =>
-          p.menuItem.id === item.id &&
-          JSON.stringify(p.selectedOptions) === JSON.stringify(selectedOptions)
-      );
-      if (idx >= 0) {
-        const next = [...prev];
-        next[idx] = { ...next[idx], quantity: next[idx].quantity + 1 };
-        return next;
-      }
-      return [...prev, { menuItem: item, quantity: 1, selectedOptions }];
-    });
+    setCart((prev) => [...prev, { menuItem: item, quantity: 1, selectedOptions }]);
   };
 
   const updateQty = (idx: number, delta: number) => {
@@ -98,10 +86,8 @@ const POSPage = () => {
 
   const handleSubmit = async () => {
     if (cart.length === 0) return;
-    if (mode === 'internal' && orderType === '內用' && !tableNumber.trim()) {
-      toast({ title: '請輸入桌號', variant: 'destructive' });
-      return;
-    }
+    // 桌號為選填，不做必填驗證
+
     setSubmitting(true);
     const id = `${mode === 'foodpanda' ? 'FP' : 'IN'}${Date.now()}`;
     await addOrder({
