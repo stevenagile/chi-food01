@@ -432,7 +432,7 @@ const InventoryPage = () => {
             {menuAvailability.length === 0 ? (
               <div className="text-center py-10">
                 <p className="text-muted-foreground mb-2">尚未設定任何食譜配方</p>
-                <button onClick={() => setTab('recipes')} className="text-primary text-sm font-medium hover:underline">前往設定食譜 →</button>
+                <button onClick={() => { setTab('setup'); setSetupView('byMenu'); }} className="text-primary text-sm font-medium hover:underline">前往設定食譜 →</button>
               </div>
             ) : (
               <div className="space-y-3">
