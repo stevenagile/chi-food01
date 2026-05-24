@@ -151,13 +151,13 @@ const InventoryPage = () => {
   // --- CRUD ---
   const handleSaveIngredient = async () => {
     const data = {
-      name: form.name || '',
-      unit: form.unit || '份',
+      name: String(form.name || ''),
+      unit: String(form.unit || '份'),
       current_stock: Number(form.current_stock) || 0,
       min_stock: Number(form.min_stock) || 0,
       cost_per_unit: Number(form.cost_per_unit) || 0,
       supplier_id: null,
-      category: form.category || '其他',
+      category: String(form.category || '其他'),
     };
     if (!data.name) { toast({ title: '請輸入名稱', variant: 'destructive' }); return; }
     if (editItem) await supabase.from('ingredients').update(data).eq('id', editItem.id);
