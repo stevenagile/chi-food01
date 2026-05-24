@@ -28,7 +28,8 @@ export const useMenuAvailability = () => {
     for (const row of data) {
       const mid = row.menu_item_id;
       if (!grouped[mid]) grouped[mid] = [];
-      const stock = (row as any).ingredients?.current_stock ?? 0;
+      const ingRel = (row as { ingredients: { current_stock: number } | null }).ingredients;
+      const stock = ingRel?.current_stock ?? 0;
       grouped[mid].push({ recipeQty: row.quantity, stock });
     }
 
