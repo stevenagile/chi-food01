@@ -13,7 +13,7 @@ dist-ssr
 *.local
 
 # Env files (contains Supabase keys)
-.env
+# .env (tracked for publish build)
 .env.local
 .env.*.local
 
