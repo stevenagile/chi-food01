@@ -111,10 +111,10 @@ const POSPage = () => {
       status: '待確認',
       createdAt: new Date(),
       customerName: mode === 'foodpanda' ? 'Foodpanda' : undefined,
-      paymentStatus: mode === 'foodpanda' ? '已付款' : '未付款',
-      paymentMethod: mode === 'foodpanda' ? '掃碼支付' : null,
+      paymentStatus: '已付款',
+      paymentMethod: mode === 'foodpanda' ? '掃碼支付' : '現金',
     });
-    toast({ title: '送單成功', description: `${mode === 'foodpanda' ? 'Foodpanda' : '內部'} · $${total}` });
+    toast({ title: '已結帳', description: `${mode === 'foodpanda' ? 'Foodpanda' : '內部'} · $${total}` });
 
     // 檢查低於安全庫存的食材（DB 觸發器已自動扣減）
     try {
@@ -256,7 +256,7 @@ const POSPage = () => {
           className={`w-full py-4 rounded-2xl text-white font-bold text-lg flex items-center justify-center gap-2 disabled:opacity-40 ${accent}`}
         >
           <Check size={20} />
-          {submitting ? '送單中...' : '送單'}
+          {submitting ? '處理中...' : '結帳'}
         </button>
       </div>
     </>
