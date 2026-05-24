@@ -206,7 +206,7 @@ const InventoryPage = () => {
   };
 
   const openAdd = (preset?: Partial<Ingredient>) => { setEditItem(null); setForm({ category: '主料', unit: '份', ...preset }); setShowForm(true); };
-  const openEdit = (item: any) => { setEditItem(item); setForm({ ...item }); setShowForm(true); };
+  const openEdit = (item: Ingredient) => { setEditItem(item); setForm({ ...item } as Record<string, string | number>); setShowForm(true); };
 
   const dailyDraftCount = Object.values(dailyStock).filter(v => v !== '').length;
 
