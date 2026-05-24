@@ -160,7 +160,7 @@ export const useOrderStore = create<OrderState>((set, get) => ({
   updateOrderItems: async (id, items, total) => {
     const { error } = await supabase
       .from('orders')
-      .update({ items: items as any, total })
+      .update({ items: items as unknown as TablesUpdate<'orders'>['items'], total })
       .eq('id', id);
 
     if (!error) {
