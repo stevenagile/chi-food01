@@ -244,113 +244,34 @@ const POSPage = () => {
           </div>
         </div>
 
-        {/* Right: cart */}
-        <div className="w-[380px] flex flex-col bg-card border-l border-border">
-          {/* Mode/Type Header */}
-          <div className={`px-4 py-3 ${accent} text-white`}>
-            <div className="flex items-center gap-2 mb-2">
-              {mode === 'foodpanda' ? <Bike size={20} /> : <Store size={20} />}
-              <span className="font-bold text-base">
-                {mode === 'foodpanda' ? 'Foodpanda 訂單' : '內部代點'}
-              </span>
-            </div>
-            {mode === 'internal' && (
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setOrderType('內用')}
-                  className={`flex-1 py-2 rounded-lg font-bold text-sm ${
-                    orderType === '內用' ? 'bg-white text-primary' : 'bg-white/20'
-                  }`}
-                >
-                  內用
-                </button>
-                <button
-                  onClick={() => setOrderType('外帶')}
-                  className={`flex-1 py-2 rounded-lg font-bold text-sm ${
-                    orderType === '外帶' ? 'bg-white text-primary' : 'bg-white/20'
-                  }`}
-                >
-                  外帶
-                </button>
-                {orderType === '內用' && (
-                  <input
-                    value={tableNumber}
-                    onChange={(e) => setTableNumber(e.target.value)}
-                    placeholder="桌號"
-                    className="w-20 px-2 rounded-lg text-foreground font-bold text-center"
-                  />
-                )}
-              </div>
-            )}
-          </div>
-
-          {/* Cart items */}
-          <div className="flex-1 overflow-y-auto p-3 space-y-2">
-            {cart.length === 0 ? (
-              <div className="text-center text-muted-foreground py-12">尚未選擇品項</div>
-            ) : (
-              cart.map((it, idx) => (
-                <div key={idx} className="bg-background rounded-xl p-3 border border-border">
-                  <div className="flex justify-between items-start mb-1">
-                    <div className="font-bold text-foreground">{it.menuItem.name}</div>
-                    <button
-                      onClick={() => updateQty(idx, -it.quantity)}
-                      className="text-destructive p-1"
-                    >
-                      <Trash2 size={14} />
-                    </button>
-                  </div>
-                  {it.menuItem.options?.map((opt) => (
-                    <button
-                      key={opt.name}
-                      onClick={() => cycleOption(idx, opt.name)}
-                      className="text-xs px-2 py-1 mr-1 mb-1 bg-muted rounded-md hover:bg-muted/70"
-                    >
-                      {opt.name}: {it.selectedOptions[opt.name]}
-                    </button>
-                  ))}
-                  <div className="flex items-center justify-between mt-2">
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => updateQty(idx, -1)}
-                        className="w-9 h-9 rounded-lg bg-muted flex items-center justify-center"
-                      >
-                        <Minus size={16} />
-                      </button>
-                      <span className="font-bold text-base w-6 text-center">{it.quantity}</span>
-                      <button
-                        onClick={() => updateQty(idx, 1)}
-                        className="w-9 h-9 rounded-lg bg-muted flex items-center justify-center"
-                      >
-                        <Plus size={16} />
-                      </button>
-                    </div>
-                    <span className={`font-bold ${accentText}`}>
-                      ${calcItemPrice(it) * it.quantity}
-                    </span>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-
-          {/* Footer */}
-          <div className="border-t border-border p-3 space-y-2">
-            <div className="flex justify-between items-center">
-              <span className="text-muted-foreground">{itemCount} 件</span>
-              <span className={`text-2xl font-bold ${accentText}`}>${total}</span>
-            </div>
-            <button
-              onClick={handleSubmit}
-              disabled={cart.length === 0 || submitting}
-              className={`w-full py-4 rounded-2xl text-white font-bold text-lg flex items-center justify-center gap-2 disabled:opacity-40 ${accent}`}
-            >
-              <Check size={20} />
-              {submitting ? '送單中...' : '送單'}
-            </button>
-          </div>
+        {/* Right: cart (desktop sidebar) */}
+        <div className="hidden lg:flex w-[380px] flex-col bg-card border-l border-border">
+          {cartContent}
         </div>
       </div>
+
+      {/* Floating cart button (mobile/tablet) */}
+      {itemCount > 0 && (
+        <button
+          onClick={() => setCartOpen(true)}
+          className={`lg:hidden fixed bottom-4 right-4 z-40 flex items-center gap-3 px-5 py-3 rounded-2xl text-white font-bold shadow-warm ${accent}`}
+        >
+          <div className="relative">
+            <ShoppingBag size={20} />
+            <span className="absolute -top-2 -right-2 w-5 h-5 flex items-center justify-center bg-white text-foreground text-xs font-bold rounded-full">
+              {itemCount}
+            </span>
+          </div>
+          <span>${total}</span>
+        </button>
+      )}
+
+      {/* Bottom sheet cart (mobile/tablet) */}
+      <Sheet open={cartOpen} onOpenChange={setCartOpen}>
+        <SheetContent side="bottom" className="p-0 h-[85vh] flex flex-col lg:hidden">
+          {cartContent}
+        </SheetContent>
+      </Sheet>
     </div>
   );
 };
