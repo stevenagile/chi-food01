@@ -200,7 +200,7 @@ const AdminPage = () => {
                       {laneTotal} 筆
                     </span>
                   </header>
-                  <div className="p-4 grid md:grid-cols-3 gap-5">
+                  <div className="p-4 grid gap-5" style={{ gridTemplateColumns: showCompleted[lane.label] ? 'minmax(0,1fr) minmax(0,1fr) minmax(0,1fr)' : 'minmax(0,1fr) minmax(0,1fr) auto' }}>
                     <div>
                       <h2 className="font-serif-tc font-bold text-foreground mb-3 flex items-center gap-2">
                         <DollarSign size={18} className="text-green-600" />
@@ -215,13 +215,13 @@ const AdminPage = () => {
                       </h2>
                       <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">{lane.data.inProgress.map(renderOrderCard)}</div>
                     </div>
-                    <div>
+                    <div className={showCompleted[lane.label] ? '' : 'w-auto'}>
                       <button
                         onClick={() => setShowCompleted((s) => ({ ...s, [lane.label]: !s[lane.label] }))}
-                        className="w-full mb-3 flex items-center gap-2 font-serif-tc font-bold text-foreground hover:text-primary transition-colors"
+                        className="mb-3 flex items-center gap-1.5 font-serif-tc font-bold text-foreground hover:text-primary transition-colors text-sm whitespace-nowrap"
                       >
-                        {showCompleted[lane.label] ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-                        <CheckCircle2 size={18} className="text-dark-wood" />
+                        {showCompleted[lane.label] ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+                        <CheckCircle2 size={16} className="text-dark-wood" />
                         結案 ({lane.data.completed.length})
                       </button>
                       {showCompleted[lane.label] && (
