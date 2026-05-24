@@ -51,9 +51,15 @@ const AdminPage = () => {
     toast({ title: '已結帳', description: `$${order.total} · 進入製作中` });
   };
 
-  const pendingOrders = useMemo(() => orders.filter((o) => o.status === '待確認'), [orders]);
-  const inProgressOrders = useMemo(() => orders.filter((o) => o.status === '製作中'), [orders]);
-  const completedOrders = useMemo(() => orders.filter((o) => o.status === '已完成' || o.status === '已取消'), [orders]);
+  const dineInOrders = useMemo(() => orders.filter((o) => o.type === '內用'), [orders]);
+  const takeoutOrders = useMemo(() => orders.filter((o) => o.type === '外帶'), [orders]);
+  const splitByStatus = (list: Order[]) => ({
+    pending: list.filter((o) => o.status === '待確認'),
+    inProgress: list.filter((o) => o.status === '製作中'),
+    completed: list.filter((o) => o.status === '已完成' || o.status === '已取消'),
+  });
+  const dineIn = useMemo(() => splitByStatus(dineInOrders), [dineInOrders]);
+  const takeout = useMemo(() => splitByStatus(takeoutOrders), [takeoutOrders]);
 
   const renderOrderCard = (order: Order) => {
     const isPaid = order.paymentStatus === '已付款';
