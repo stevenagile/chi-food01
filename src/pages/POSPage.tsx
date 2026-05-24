@@ -25,6 +25,7 @@ const POSPage = () => {
   const [orderType, setOrderType] = useState<'內用' | '外帶'>('內用');
   const [tableNumber, setTableNumber] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
 
   const filtered = useMemo(
     () => menuItems.filter((m) => m.category === activeCat),
