@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { supabase } from '@/integrations/supabase/client';
+import type { Tables, TablesInsert, TablesUpdate } from '@/integrations/supabase/types';
 import type { Order, CartItem } from '@/data/menu';
 
 interface OrderState {
@@ -15,18 +16,20 @@ interface OrderState {
   subscribeToOrders: () => () => void;
 }
 
-const mapRowToOrder = (row: any): Order => ({
+type OrderRow = Tables<'orders'>;
+
+const mapRowToOrder = (row: OrderRow): Order => ({
   id: row.id,
   type: row.type as Order['type'],
   tableNumber: row.table_number ?? undefined,
-  items: (row.items as any[]) ?? [],
+  items: (row.items as unknown as CartItem[]) ?? [],
   total: row.total,
   status: row.status as Order['status'],
   createdAt: new Date(row.created_at),
   customerName: row.customer_name ?? undefined,
   customerPhone: row.customer_phone ?? undefined,
   paymentStatus: (row.payment_status as Order['paymentStatus']) ?? '未付款',
-  paymentMethod: row.payment_method ?? null,
+  paymentMethod: (row.payment_method as Order['paymentMethod']) ?? null,
   paidAt: row.paid_at ? new Date(row.paid_at) : null,
   guestCount: row.guest_count ?? null,
   cookingAt: row.cooking_at ? new Date(row.cooking_at) : null,
@@ -62,7 +65,7 @@ export const useOrderStore = create<OrderState>((set, get) => ({
       id: order.id,
       type: order.type,
       table_number: order.tableNumber ?? null,
-      items: order.items as any,
+      items: order.items as unknown as TablesInsert<'orders'>['items'],
       total: order.total,
       status: order.status,
       customer_name: order.customerName ?? null,
@@ -76,7 +79,7 @@ export const useOrderStore = create<OrderState>((set, get) => ({
   },
 
   updateOrderStatus: async (id, status) => {
-    const updateData: any = { status };
+    const updateData: TablesUpdate<'orders'> = { status };
     const now = new Date().toISOString();
     if (status === '製作中') {
       updateData.cooking_at = now;
@@ -130,7 +133,7 @@ export const useOrderStore = create<OrderState>((set, get) => ({
   },
 
   updatePaymentStatus: async (id, paymentStatus, paymentMethod) => {
-    const updateData: any = {
+    const updateData: TablesUpdate<'orders'> = {
       payment_status: paymentStatus,
       payment_method: paymentMethod ?? null,
     };
@@ -147,7 +150,7 @@ export const useOrderStore = create<OrderState>((set, get) => ({
       set((state) => ({
         orders: state.orders.map((o) =>
           o.id === id
-            ? { ...o, paymentStatus, paymentMethod: paymentMethod as any, paidAt: paymentStatus === '已付款' ? new Date() : null }
+            ? { ...o, paymentStatus, paymentMethod: (paymentMethod as Order['paymentMethod']) ?? null, paidAt: paymentStatus === '已付款' ? new Date() : null }
             : o
         ),
       }));
@@ -157,7 +160,7 @@ export const useOrderStore = create<OrderState>((set, get) => ({
   updateOrderItems: async (id, items, total) => {
     const { error } = await supabase
       .from('orders')
-      .update({ items: items as any, total })
+      .update({ items: items as unknown as TablesUpdate<'orders'>['items'], total })
       .eq('id', id);
 
     if (!error) {

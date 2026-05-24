@@ -77,8 +77,8 @@ const InventoryPage = () => {
   const [search, setSearch] = useState('');
   const [filterCat, setFilterCat] = useState<string>('all');
   const [showForm, setShowForm] = useState(false);
-  const [editItem, setEditItem] = useState<any>(null);
-  const [form, setForm] = useState<any>({});
+  const [editItem, setEditItem] = useState<Ingredient | null>(null);
+  const [form, setForm] = useState<Record<string, string | number>>({});
   const [dailyStock, setDailyStock] = useState<Record<string, string>>({});
   const [savingDaily, setSavingDaily] = useState(false);
   const [closing, setClosing] = useState(false);
@@ -90,13 +90,13 @@ const InventoryPage = () => {
       supabase.from('ingredients').select('*').order('category').order('name'),
       supabase.from('menu_item_ingredients').select('*'),
     ]);
-    if (i.data) setIngredients(i.data as any);
-    if (rec.data) setRecipes(rec.data as any);
+    if (i.data) setIngredients(i.data as Ingredient[]);
+    if (rec.data) setRecipes(rec.data as MenuItemIngredient[]);
   };
 
   const fetchHistory = async () => {
-    const { data } = await supabase.from('daily_history' as any).select('*').order('stat_date', { ascending: false }).limit(60);
-    if (data) setHistory(data as any);
+    const { data } = await supabase.from('daily_history').select('*').order('stat_date', { ascending: false }).limit(60);
+    if (data) setHistory(data as DailyHistory[]);
   };
 
   const fetchServedToday = async () => {
@@ -151,13 +151,13 @@ const InventoryPage = () => {
   // --- CRUD ---
   const handleSaveIngredient = async () => {
     const data = {
-      name: form.name || '',
-      unit: form.unit || '份',
+      name: String(form.name || ''),
+      unit: String(form.unit || '份'),
       current_stock: Number(form.current_stock) || 0,
       min_stock: Number(form.min_stock) || 0,
       cost_per_unit: Number(form.cost_per_unit) || 0,
       supplier_id: null,
-      category: form.category || '其他',
+      category: String(form.category || '其他'),
     };
     if (!data.name) { toast({ title: '請輸入名稱', variant: 'destructive' }); return; }
     if (editItem) await supabase.from('ingredients').update(data).eq('id', editItem.id);
@@ -188,7 +188,7 @@ const InventoryPage = () => {
   const handleStartNewDay = async () => {
     if (!confirm('結束今日並開始新的一天？\n\n會封存今日訂單並將備料資料歸檔。')) return;
     setClosing(true);
-    const { error } = await supabase.rpc('close_daily_stats' as any);
+    const { error } = await supabase.rpc('close_daily_stats');
     setClosing(false);
     if (error) { toast({ title: '失敗', description: error.message, variant: 'destructive' }); return; }
     toast({ title: '✅ 已開始新的一天' });
@@ -206,7 +206,7 @@ const InventoryPage = () => {
   };
 
   const openAdd = (preset?: Partial<Ingredient>) => { setEditItem(null); setForm({ category: '主料', unit: '份', ...preset }); setShowForm(true); };
-  const openEdit = (item: any) => { setEditItem(item); setForm({ ...item }); setShowForm(true); };
+  const openEdit = (item: Ingredient) => { setEditItem(item); setForm({ ...item } as Record<string, string | number>); setShowForm(true); };
 
   const dailyDraftCount = Object.values(dailyStock).filter(v => v !== '').length;
 
@@ -368,7 +368,7 @@ const InventoryPage = () => {
                                 mainIngredients={mainIngredients}
                                 existingIds={itemRecipes.map(r => r.ingredient_id)}
                                 onAdd={async (ingredient_id, quantity) => {
-                                  const { error } = await supabase.from('menu_item_ingredients').insert({ menu_item_id: mi.id, ingredient_id, quantity } as any);
+                                  const { error } = await supabase.from('menu_item_ingredients').insert({ menu_item_id: mi.id, ingredient_id, quantity });
                                   if (error) { toast({ title: '失敗', description: error.message, variant: 'destructive' }); return; }
                                   fetchAll();
                                 }}

@@ -36,11 +36,11 @@ const ReportsPage = () => {
     });
   }, [orders, dateRange]);
 
-  const paidOrders = filteredOrders.filter(o => (o as any).paymentStatus === '已付款');
+  const paidOrders = filteredOrders.filter(o => o.paymentStatus === '已付款');
   const totalRevenue = paidOrders.reduce((s, o) => s + o.total, 0);
   const totalOrders = filteredOrders.length;
   const avgOrderValue = totalOrders > 0 ? Math.round(totalRevenue / (paidOrders.length || 1)) : 0;
-  const pendingPayment = filteredOrders.filter(o => (o as any).paymentStatus !== '已付款').reduce((s, o) => s + o.total, 0);
+  const pendingPayment = filteredOrders.filter(o => o.paymentStatus !== '已付款').reduce((s, o) => s + o.total, 0);
 
   // Product sales ranking
   const productSales = useMemo(() => {
@@ -84,13 +84,13 @@ const ReportsPage = () => {
   // Turnover statistics
   const turnoverStats = useMemo(() => {
     const dineInPaid = filteredOrders.filter(
-      (o) => o.type === '內用' && o.tableNumber && (o as any).paymentStatus === '已付款' && (o as any).paidAt
+      (o) => o.type === '內用' && o.tableNumber && o.paymentStatus === '已付款' && o.paidAt
     );
 
     const durations: number[] = [];
     dineInPaid.forEach((o) => {
       const start = new Date(o.createdAt).getTime();
-      const end = new Date((o as any).paidAt).getTime();
+      const end = new Date(o.paidAt).getTime();
       if (end > start) {
         durations.push((end - start) / 60000);
       }
@@ -134,13 +134,13 @@ const ReportsPage = () => {
   // Prep time statistics (cooking_at → completed_at)
   const prepTimeStats = useMemo(() => {
     const completedOrders = filteredOrders.filter(
-      (o) => (o as any).cookingAt && (o as any).completedAt
+      (o) => o.cookingAt && o.completedAt
     );
 
     const prepTimes: number[] = [];
     completedOrders.forEach((o) => {
-      const start = new Date((o as any).cookingAt).getTime();
-      const end = new Date((o as any).completedAt).getTime();
+      const start = new Date(o.cookingAt).getTime();
+      const end = new Date(o.completedAt).getTime();
       if (end > start) {
         prepTimes.push((end - start) / 60000);
       }
@@ -165,12 +165,12 @@ const ReportsPage = () => {
   const prepTimeByHour = useMemo(() => {
     const hourMap: Record<number, { total: number; count: number }> = {};
     filteredOrders.forEach((o) => {
-      if (!(o as any).cookingAt || !(o as any).completedAt) return;
-      const start = new Date((o as any).cookingAt).getTime();
-      const end = new Date((o as any).completedAt).getTime();
+      if (!o.cookingAt || !o.completedAt) return;
+      const start = new Date(o.cookingAt).getTime();
+      const end = new Date(o.completedAt).getTime();
       if (end <= start) return;
       const mins = (end - start) / 60000;
-      const hour = new Date((o as any).cookingAt).getHours();
+      const hour = new Date(o.cookingAt).getHours();
       if (!hourMap[hour]) hourMap[hour] = { total: 0, count: 0 };
       hourMap[hour].total += mins;
       hourMap[hour].count += 1;
@@ -192,7 +192,7 @@ const ReportsPage = () => {
       const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
       if (!monthMap[key]) monthMap[key] = { revenue: 0, orders: 0, paid: 0, avgOrder: 0 };
       monthMap[key].orders += 1;
-      if ((o as any).paymentStatus === '已付款') {
+      if (o.paymentStatus === '已付款') {
         monthMap[key].revenue += o.total;
         monthMap[key].paid += 1;
       }
@@ -504,11 +504,11 @@ const ReportsPage = () => {
                     </td>
                     <td className="py-2 px-3 text-center">
                       <span className={`text-xs px-2 py-0.5 rounded-full ${
-                        (order as any).paymentStatus === '已付款' 
+                        order.paymentStatus === '已付款' 
                           ? 'bg-green-100 text-green-700' 
                           : 'bg-orange-100 text-orange-600'
                       }`}>
-                        {(order as any).paymentStatus || '未付款'}
+                        {order.paymentStatus || '未付款'}
                       </span>
                     </td>
                     <td className="py-2 px-3 text-right text-xs text-muted-foreground">

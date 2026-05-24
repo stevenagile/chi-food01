@@ -20,7 +20,14 @@ serve(async (req) => {
 
     const platform = body.platform || "外送平台";
     const externalId = body.order_id || `ext-${Date.now()}`;
-    const items = (body.items || []).map((item: any) => ({
+    type WebhookItem = { name?: string; price?: number | string; quantity?: number | string; note?: string };
+    type OrderItem = {
+      menuItem: { id: string; name: string; price: number; description: string; category: string };
+      quantity: number;
+      selectedOptions: Record<string, string>;
+      note?: string;
+    };
+    const items: OrderItem[] = (body.items || []).map((item: WebhookItem) => ({
       menuItem: {
         id: `ext-${item.name}`,
         name: item.name || "未知品項",
@@ -33,7 +40,7 @@ serve(async (req) => {
       note: item.note || undefined,
     }));
 
-    const total = Number(body.total) || items.reduce((s: number, i: any) => s + i.menuItem.price * i.quantity, 0);
+    const total = Number(body.total) || items.reduce((s: number, i: OrderItem) => s + i.menuItem.price * i.quantity, 0);
 
     // Check ingredient availability before accepting the order
     const { data: availability, error: checkError } = await supabase.rpc(

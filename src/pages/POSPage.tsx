@@ -125,20 +125,20 @@ const POSPage = () => {
         .from('menu_item_ingredients')
         .select('ingredient_id')
         .in('menu_item_id', menuIds);
-      const ingIds = Array.from(new Set((maps ?? []).map((m: any) => m.ingredient_id)));
+      const ingIds = Array.from(new Set((maps ?? []).map((m) => m.ingredient_id)));
       if (ingIds.length > 0) {
         const { data: ings } = await supabase
           .from('ingredients')
           .select('name, current_stock, min_stock, unit')
           .in('id', ingIds);
         const low = (ings ?? []).filter(
-          (i: any) => Number(i.min_stock) > 0 && Number(i.current_stock) <= Number(i.min_stock)
+          (i) => Number(i.min_stock) > 0 && Number(i.current_stock) <= Number(i.min_stock)
         );
         if (low.length > 0) {
           toast({
             title: '⚠️ 庫存不足提醒',
             description: low
-              .map((i: any) => `${i.name}：剩 ${i.current_stock}${i.unit}（安全量 ${i.min_stock}）`)
+              .map((i) => `${i.name}：剩 ${i.current_stock}${i.unit}（安全量 ${i.min_stock}）`)
               .join('\n'),
             variant: 'destructive',
           });
