@@ -165,19 +165,19 @@ const POSPage = () => {
         <div className="ml-auto flex gap-2">
           <button
             onClick={() => setMode('internal')}
-            className={`px-5 py-3 rounded-xl font-bold flex items-center gap-2 transition-all ${
+            className={`px-3 py-2 sm:px-5 sm:py-3 rounded-xl font-bold flex items-center gap-2 text-sm sm:text-base transition-all ${
               mode === 'internal' ? 'bg-gold text-dark-wood' : 'bg-white/10 hover:bg-white/20'
             }`}
           >
-            <Store size={18} /> 內部
+            <Store size={18} /> <span className="hidden sm:inline">內部</span>
           </button>
           <button
             onClick={() => setMode('foodpanda')}
-            className={`px-5 py-3 rounded-xl font-bold flex items-center gap-2 transition-all ${
+            className={`px-3 py-2 sm:px-5 sm:py-3 rounded-xl font-bold flex items-center gap-2 text-sm sm:text-base transition-all ${
               mode === 'foodpanda' ? 'bg-pink-500 text-white' : 'bg-white/10 hover:bg-white/20'
             }`}
           >
-            <Bike size={18} /> Foodpanda
+            <Bike size={18} /> <span className="hidden sm:inline">Foodpanda</span>
           </button>
         </div>
       </div>
