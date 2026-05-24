@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { motion } from 'framer-motion';
 import { UtensilsCrossed, LogIn } from 'lucide-react';
@@ -11,7 +11,16 @@ const AdminLoginPage = () => {
   const [loading, setLoading] = useState(false);
   const { signIn } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
+
+  useEffect(() => {
+    const err = (location.state as { error?: string } | null)?.error;
+    if (err) {
+      toast({ title: '無法進入後台', description: err, variant: 'destructive' });
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state, toast]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
