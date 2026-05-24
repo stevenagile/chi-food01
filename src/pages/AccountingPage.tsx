@@ -54,6 +54,7 @@ const AccountingPage = () => {
     setLoading(false);
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { fetchData(); }, [dateFrom, dateTo]);
 
   const filtered = useMemo(() => {
