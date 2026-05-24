@@ -125,7 +125,7 @@ const POSPage = () => {
         .from('menu_item_ingredients')
         .select('ingredient_id')
         .in('menu_item_id', menuIds);
-      const ingIds = Array.from(new Set((maps ?? []).map((m: any) => m.ingredient_id)));
+      const ingIds = Array.from(new Set((maps ?? []).map((m) => m.ingredient_id)));
       if (ingIds.length > 0) {
         const { data: ings } = await supabase
           .from('ingredients')
