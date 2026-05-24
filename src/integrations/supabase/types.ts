@@ -427,6 +427,26 @@ export type Database = {
       archive_all_orders: { Args: never; Returns: Json }
       check_ingredient_availability: { Args: { p_items: Json }; Returns: Json }
       close_daily_stats: { Args: never; Returns: Json }
+      get_menu_availability: {
+        Args: never
+        Returns: {
+          current_stock: number
+          menu_item_id: string
+          recipe_qty: number
+        }[]
+      }
+      get_order_status: {
+        Args: { p_id: string }
+        Returns: {
+          created_at: string
+          id: string
+          items: Json
+          status: string
+          table_number: string
+          total: number
+          type: string
+        }[]
+      }
       has_role: { Args: { _role: string; _user_id: string }; Returns: boolean }
     }
     Enums: {
