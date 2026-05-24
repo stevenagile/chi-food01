@@ -65,7 +65,7 @@ const AdminPage = () => {
   const renderOrderCard = (order: Order) => {
     const isPaid = order.paymentStatus === '已付款';
     return (
-      <div key={order.id} className="bg-card rounded-lg border border-border p-2.5 shadow-warm text-sm">
+      <div key={order.id} className="bg-card rounded-lg border border-border p-2.5 shadow-warm text-sm self-start">
         <div className="flex items-center justify-between mb-1.5 gap-2">
           <div className="min-w-0">
             <p className="font-medium text-foreground text-sm truncate">
