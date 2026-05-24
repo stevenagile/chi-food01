@@ -205,7 +205,7 @@ const POSPage = () => {
 
           {/* Items grid */}
           <div className="flex-1 overflow-y-auto p-4">
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-3">
               {filtered.map((item) => {
                 const stock = availability[item.id];
                 const sold = isSoldOut(item.id);
