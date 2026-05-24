@@ -344,7 +344,7 @@ const InventoryPage = () => {
             {mainIngredients.length === 0 ? (
               <div className="text-center py-10">
                 <p className="text-muted-foreground mb-2">尚無主原料</p>
-                <button onClick={() => setTab('ingredients')} className="text-primary text-sm font-medium hover:underline">前往新增主原料 →</button>
+                <button onClick={() => { setTab('setup'); setSetupView('byIngredient'); }} className="text-primary text-sm font-medium hover:underline">前往新增主原料 →</button>
               </div>
             ) : (
               <div className="space-y-2">
