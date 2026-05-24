@@ -1,10 +1,9 @@
 import { useNavigate, useLocation } from 'react-router-dom';
-import { LayoutGrid, ShoppingBag, AlertTriangle, Package, QrCode, BookOpen, Wallet } from 'lucide-react';
+import { LayoutGrid, ShoppingBag, Package, QrCode, BookOpen, Wallet } from 'lucide-react';
 
 const tabs = [
   { path: '/admin', label: '訂單', icon: LayoutGrid },
   { path: '/admin/pos', label: 'POS', icon: ShoppingBag },
-  { path: '/admin/stock', label: '庫存速覽', icon: AlertTriangle },
   { path: '/admin/inventory', label: '庫存管理', icon: Package },
   { path: '/admin/qr-codes', label: 'QR Code', icon: QrCode },
   { path: '/admin/manual', label: '手冊', icon: BookOpen },
