@@ -256,7 +256,7 @@ const POSPage = () => {
           className={`w-full py-4 rounded-2xl text-white font-bold text-lg flex items-center justify-center gap-2 disabled:opacity-40 ${accent}`}
         >
           <Check size={20} />
-          {submitting ? '送單中...' : '送單'}
+          {submitting ? '處理中...' : '結帳'}
         </button>
       </div>
     </>
