@@ -188,7 +188,7 @@ const InventoryPage = () => {
   const handleStartNewDay = async () => {
     if (!confirm('結束今日並開始新的一天？\n\n會封存今日訂單並將備料資料歸檔。')) return;
     setClosing(true);
-    const { error } = await supabase.rpc('close_daily_stats' as any);
+    const { error } = await supabase.rpc('close_daily_stats');
     setClosing(false);
     if (error) { toast({ title: '失敗', description: error.message, variant: 'destructive' }); return; }
     toast({ title: '✅ 已開始新的一天' });
