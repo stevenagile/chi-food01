@@ -150,7 +150,7 @@ export const useOrderStore = create<OrderState>((set, get) => ({
       set((state) => ({
         orders: state.orders.map((o) =>
           o.id === id
-            ? { ...o, paymentStatus, paymentMethod: paymentMethod as any, paidAt: paymentStatus === '已付款' ? new Date() : null }
+            ? { ...o, paymentStatus, paymentMethod: (paymentMethod as Order['paymentMethod']) ?? null, paidAt: paymentStatus === '已付款' ? new Date() : null }
             : o
         ),
       }));
