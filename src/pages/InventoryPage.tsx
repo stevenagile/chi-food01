@@ -77,8 +77,8 @@ const InventoryPage = () => {
   const [search, setSearch] = useState('');
   const [filterCat, setFilterCat] = useState<string>('all');
   const [showForm, setShowForm] = useState(false);
-  const [editItem, setEditItem] = useState<any>(null);
-  const [form, setForm] = useState<any>({});
+  const [editItem, setEditItem] = useState<Ingredient | null>(null);
+  const [form, setForm] = useState<Partial<Ingredient>>({});
   const [dailyStock, setDailyStock] = useState<Record<string, string>>({});
   const [savingDaily, setSavingDaily] = useState(false);
   const [closing, setClosing] = useState(false);
@@ -90,13 +90,13 @@ const InventoryPage = () => {
       supabase.from('ingredients').select('*').order('category').order('name'),
       supabase.from('menu_item_ingredients').select('*'),
     ]);
-    if (i.data) setIngredients(i.data as any);
-    if (rec.data) setRecipes(rec.data as any);
+    if (i.data) setIngredients(i.data as Ingredient[]);
+    if (rec.data) setRecipes(rec.data as MenuItemIngredient[]);
   };
 
   const fetchHistory = async () => {
-    const { data } = await supabase.from('daily_history' as any).select('*').order('stat_date', { ascending: false }).limit(60);
-    if (data) setHistory(data as any);
+    const { data } = await supabase.from('daily_history').select('*').order('stat_date', { ascending: false }).limit(60);
+    if (data) setHistory(data as DailyHistory[]);
   };
 
   const fetchServedToday = async () => {
