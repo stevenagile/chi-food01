@@ -1,0 +1,4 @@
+project_id = "ftazmfgpyzdeatnoxcum"
+
+[functions.webhook-order]
+verify_jwt = false

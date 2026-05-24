@@ -1,0 +1,94 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700;900&family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 30 30% 97%;
+    --foreground: 15 30% 12%;
+
+    --card: 30 25% 95%;
+    --card-foreground: 15 30% 12%;
+
+    --popover: 30 20% 98%;
+    --popover-foreground: 15 30% 12%;
+
+    --primary: 0 72% 42%;
+    --primary-foreground: 40 100% 97%;
+
+    --secondary: 38 80% 55%;
+    --secondary-foreground: 15 30% 12%;
+
+    --muted: 30 15% 90%;
+    --muted-foreground: 15 10% 45%;
+
+    --accent: 38 80% 55%;
+    --accent-foreground: 15 30% 12%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 30 15% 85%;
+    --input: 30 15% 85%;
+    --ring: 0 72% 42%;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 15 25% 15%;
+    --sidebar-foreground: 40 30% 90%;
+    --sidebar-primary: 0 72% 50%;
+    --sidebar-primary-foreground: 40 100% 97%;
+    --sidebar-accent: 15 20% 22%;
+    --sidebar-accent-foreground: 40 30% 90%;
+    --sidebar-border: 15 15% 25%;
+    --sidebar-ring: 0 72% 42%;
+
+    --gold: 38 80% 55%;
+    --gold-foreground: 15 30% 12%;
+    --cream: 40 40% 94%;
+    --dark-wood: 15 25% 15%;
+    --dark-wood-foreground: 40 30% 90%;
+
+    font-family: 'Noto Sans TC', sans-serif;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Noto Serif TC', serif;
+  }
+}
+
+@layer utilities {
+  .font-serif-tc {
+    font-family: 'Noto Serif TC', serif;
+  }
+  .font-sans-tc {
+    font-family: 'Noto Sans TC', sans-serif;
+  }
+  .bg-gradient-gold {
+    background: linear-gradient(135deg, hsl(38 80% 55%), hsl(45 90% 65%));
+  }
+  .bg-gradient-red {
+    background: linear-gradient(135deg, hsl(0 72% 42%), hsl(350 65% 35%));
+  }
+  .bg-dark-wood {
+    background-color: hsl(15 25% 15%);
+  }
+  .text-gold {
+    color: hsl(38 80% 55%);
+  }
+  .shadow-warm {
+    box-shadow: 0 4px 20px -4px hsl(15 30% 12% / 0.15);
+  }
+}
