@@ -24,6 +24,7 @@ const MenuPage = () => {
       setOrderType('內用');
       setTableNumber(table);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
   const [cartOpen, setCartOpen] = useState(false);

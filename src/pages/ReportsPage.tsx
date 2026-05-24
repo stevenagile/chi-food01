@@ -15,6 +15,7 @@ const ReportsPage = () => {
 
   useEffect(() => {
     fetchOrders(true); // Include archived orders for reports
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const filteredOrders = useMemo(() => {

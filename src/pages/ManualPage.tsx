@@ -94,7 +94,7 @@ const ManualPage = () => {
             ${processedContent}
             <p style="text-align:center; color:#999; margin-top:40px; font-size:11px;">虎秋文昌雞 · 系統操作手冊 v3.0 · 機密文件</p>
           </div>
-          <script>window.onload = () => { setTimeout(() => { window.print(); }, 500); }<\/script>
+          <script>window.onload = () => { setTimeout(() => { window.print(); }, 500); }</script>
         </body>
       </html>
     `);
