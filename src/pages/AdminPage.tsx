@@ -42,6 +42,7 @@ const AdminPage = () => {
     fetchOrders();
     const unsubscribe = subscribeToOrders();
     return unsubscribe;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleCheckout = async (order: Order) => {
