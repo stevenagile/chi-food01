@@ -65,7 +65,7 @@ export const useOrderStore = create<OrderState>((set, get) => ({
       id: order.id,
       type: order.type,
       table_number: order.tableNumber ?? null,
-      items: order.items as any,
+      items: order.items as unknown as TablesInsert<'orders'>['items'],
       total: order.total,
       status: order.status,
       customer_name: order.customerName ?? null,
