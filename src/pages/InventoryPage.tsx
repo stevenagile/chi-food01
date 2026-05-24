@@ -468,9 +468,32 @@ const InventoryPage = () => {
           </>
         )}
 
-        {/* === Recipes Tab === */}
-        {tab === 'recipes' && (
+        {/* === 食材與配方（合併分頁） === */}
+        {tab === 'setup' && (
           <>
+            {/* 內部視角切換 + 新增原料按鈕 */}
+            <div className="flex items-center gap-2 mb-4">
+              <div className="flex bg-muted rounded-xl p-1 flex-1">
+                <button
+                  onClick={() => setSetupView('byMenu')}
+                  className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition ${setupView === 'byMenu' ? 'bg-card shadow-sm text-foreground' : 'text-muted-foreground'}`}
+                >
+                  📋 依菜單配方
+                </button>
+                <button
+                  onClick={() => setSetupView('byIngredient')}
+                  className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition ${setupView === 'byIngredient' ? 'bg-card shadow-sm text-foreground' : 'text-muted-foreground'}`}
+                >
+                  🧂 原物料清單
+                </button>
+              </div>
+              <button onClick={openAdd} className="px-3 py-2 bg-primary text-primary-foreground rounded-xl text-sm font-bold flex items-center gap-1 whitespace-nowrap">
+                <Plus size={16} />新增原料
+              </button>
+            </div>
+
+            {setupView === 'byMenu' && (<>
+        {false && tab === 'recipes' && (
             <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 rounded-xl p-3 mb-4 text-xs text-amber-800 dark:text-amber-200">
               📋 BOM 主原料配方：每個品項只記錄主原料（雞、鴨、飯、小菜本體等），副料／調味料不列入。可在下方直接編輯所有品項。
             </div>
