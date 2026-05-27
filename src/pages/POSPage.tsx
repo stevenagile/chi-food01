@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Plus, Minus, Trash2, Check, Bike, Store, ShoppingBag } from 'lucide-react';
 import AdminNav from '@/components/AdminNav';
-import PendingPaymentPanel from '@/components/PendingPaymentPanel';
+
 import { menuItems, categories } from '@/data/menu';
 import type { MenuItem, CartItem } from '@/data/menu';
 import { useOrderStore } from '@/store/useOrderStore';
@@ -277,7 +277,6 @@ const POSPage = () => {
         <h1 className="text-lg font-serif-tc font-bold text-gold whitespace-nowrap w-[160px] shrink-0">POS</h1>
         <AdminNav />
         <div className="ml-auto flex gap-2">
-          <PendingPaymentPanel />
           <button
             onClick={() => setMode('internal')}
             className={`px-3 py-2 sm:px-5 sm:py-3 rounded-xl font-bold flex items-center gap-2 text-sm sm:text-base transition-all ${
