@@ -12,6 +12,7 @@ import AdminPage from "./pages/AdminPage";
 import AdminLoginPage from "./pages/AdminLoginPage";
 import InventoryPage from "./pages/InventoryPage";
 import POSPage from "./pages/POSPage";
+import KDSPage from "./pages/KDSPage";
 import ManualPage from "./pages/ManualPage";
 import TableQRPage from "./pages/TableQRPage";
 import AccountingPage from "./pages/AccountingPage";
@@ -36,6 +37,7 @@ const App = () => (
             <Route path="/admin/inventory" element={<ProtectedRoute><InventoryPage /></ProtectedRoute>} />
             <Route path="/admin/stock" element={<Navigate to="/admin/inventory" replace />} />
             <Route path="/admin/pos" element={<ProtectedRoute><POSPage /></ProtectedRoute>} />
+            <Route path="/admin/kds" element={<ProtectedRoute><KDSPage /></ProtectedRoute>} />
             <Route path="/admin/reports" element={<ProtectedRoute><ReportsPage /></ProtectedRoute>} />
             <Route path="/admin/qr-codes" element={<ProtectedRoute><TableQRPage /></ProtectedRoute>} />
             <Route path="/admin/manual" element={<ProtectedRoute><ManualPage /></ProtectedRoute>} />
