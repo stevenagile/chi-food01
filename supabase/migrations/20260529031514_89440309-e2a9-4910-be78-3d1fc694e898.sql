@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.close_daily_stats_cron() FROM anon, authenticated, public;
