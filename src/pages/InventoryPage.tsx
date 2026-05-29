@@ -72,7 +72,9 @@ const InlineAddRecipe = ({ mainIngredients, existingIds, onAdd }: InlineAddRecip
 
 const InventoryPage = () => {
   const { toast } = useToast();
+  const { isAdmin } = useUserRole();
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
+
   const [recipes, setRecipes] = useState<MenuItemIngredient[]>([]);
   const [history, setHistory] = useState<DailyHistory[]>([]);
   const [servedToday, setServedToday] = useState(0);
