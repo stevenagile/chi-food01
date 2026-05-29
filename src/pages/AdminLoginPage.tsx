@@ -30,7 +30,7 @@ const AdminLoginPage = () => {
     if (error) {
       toast({ title: '登入失敗', description: error.message, variant: 'destructive' });
     } else {
-      navigate('/admin');
+      navigate('/admin/pos');
     }
     setLoading(false);
   };
