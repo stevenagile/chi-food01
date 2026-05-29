@@ -259,7 +259,7 @@ const ReportsPage = () => {
               營收報表
             </h1>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
             {(['today', 'week', 'month'] as const).map((range) => (
               <button
                 key={range}
@@ -273,6 +273,33 @@ const ReportsPage = () => {
                 {dateLabels[range]}
               </button>
             ))}
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <button
+                  disabled={closing}
+                  className="ml-2 px-4 py-1.5 rounded-full text-sm font-medium bg-red-600 text-white hover:bg-red-700 transition-colors flex items-center gap-1.5 disabled:opacity-50"
+                >
+                  <RefreshCcw size={14} />
+                  結算今日並歸零
+                </button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>確認結算並歸零？</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    將今日營收與訂單數寫入歷史紀錄，並封存所有現有訂單（POS / 出餐 / 桌況清空）。此動作無法復原。
+                    <br /><br />
+                    系統每天凌晨 4:00 也會自動執行一次，若已自動結算則無需手動操作。
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>取消</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleCloseDay} className="bg-red-600 hover:bg-red-700">
+                    確認結算
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </div>
       </div>
