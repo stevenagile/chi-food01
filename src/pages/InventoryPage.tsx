@@ -232,10 +232,13 @@ const InventoryPage = () => {
               <div className="text-xs text-amber-700 dark:text-amber-300 font-medium">今日營運日</div>
               <div className="text-lg font-serif-tc font-bold text-amber-900 dark:text-amber-100">{todayLabel()}</div>
             </div>
-            <button onClick={handleStartNewDay} disabled={closing}
-              className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-sm font-bold flex items-center gap-1.5 disabled:opacity-50 shadow-md">
-              <Sunrise size={16} />{closing ? '處理中...' : '結束今日／開始新一天'}
-            </button>
+            {isAdmin && (
+              <button onClick={handleStartNewDay} disabled={closing}
+                className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-sm font-bold flex items-center gap-1.5 disabled:opacity-50 shadow-md">
+                <Sunrise size={16} />{closing ? '處理中...' : '結束今日／開始新一天'}
+              </button>
+            )}
+
           </div>
           <div className="grid grid-cols-3 gap-2 text-center">
             <div className="bg-card/60 rounded-xl py-2">
@@ -260,10 +263,15 @@ const InventoryPage = () => {
         <div className="bg-card border border-border rounded-2xl p-4">
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-base font-serif-tc font-bold text-foreground">原物料清單</h2>
-            <button onClick={() => openAdd()} className="px-3 py-1.5 bg-primary text-primary-foreground rounded-xl text-sm font-bold flex items-center gap-1">
-              <Plus size={14} />新增
-            </button>
+            {isAdmin ? (
+              <button onClick={() => openAdd()} className="px-3 py-1.5 bg-primary text-primary-foreground rounded-xl text-sm font-bold flex items-center gap-1">
+                <Plus size={14} />新增
+              </button>
+            ) : (
+              <span className="text-xs text-muted-foreground flex items-center gap-1"><Lock size={12} /> 僅供查看</span>
+            )}
           </div>
+
 
           <div className="flex items-center gap-2 mb-3">
             <div className="relative flex-1">
@@ -299,15 +307,18 @@ const InventoryPage = () => {
                         {item.min_stock > 0 && <span> · 安全 {item.min_stock}</span>}
                       </div>
                     </div>
-                    {isMain && (
+                    {isMain && isAdmin && (
                       <input type="number" step="0.1" placeholder="今日備料" value={draft ?? ''}
                         onChange={e => setDailyStock(p => ({ ...p, [item.id]: e.target.value }))}
                         className={`w-24 px-2 py-1.5 rounded-lg border bg-card text-sm text-right ${draft ? 'border-primary ring-2 ring-primary/30' : 'border-border'}`} />
                     )}
-                    <div className="flex gap-1">
-                      <button onClick={() => openEdit(item)} className="p-2 text-muted-foreground hover:bg-muted rounded-lg"><Pencil size={14} /></button>
-                      <button onClick={() => handleDeleteIngredient(item.id)} className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-950 rounded-lg"><Trash2 size={14} /></button>
-                    </div>
+                    {isAdmin && (
+                      <div className="flex gap-1">
+                        <button onClick={() => openEdit(item)} className="p-2 text-muted-foreground hover:bg-muted rounded-lg"><Pencil size={14} /></button>
+                        <button onClick={() => handleDeleteIngredient(item.id)} className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-950 rounded-lg"><Trash2 size={14} /></button>
+                      </div>
+                    )}
+
                   </div>
                 );
               })}
