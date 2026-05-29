@@ -369,25 +369,34 @@ const InventoryPage = () => {
                                     return (
                                       <div key={r.id} className="flex items-center gap-2 bg-card rounded-lg border border-border px-2 py-1.5">
                                         <span className="flex-1 text-sm truncate">{ing?.name || '未知'}</span>
-                                        <input type="number" step="0.01" defaultValue={r.quantity}
-                                          onBlur={e => { const v = Number(e.target.value); if (v !== r.quantity) handleUpdateRecipeQty(r.id, v); }}
-                                          className="w-16 px-2 py-1 rounded-md border border-border bg-background text-sm text-right" />
+                                        {isAdmin ? (
+                                          <input type="number" step="0.01" defaultValue={r.quantity}
+                                            onBlur={e => { const v = Number(e.target.value); if (v !== r.quantity) handleUpdateRecipeQty(r.id, v); }}
+                                            className="w-16 px-2 py-1 rounded-md border border-border bg-background text-sm text-right" />
+                                        ) : (
+                                          <span className="w-16 px-2 py-1 text-sm text-right text-foreground">{r.quantity}</span>
+                                        )}
                                         <span className="text-xs text-muted-foreground w-6">{ing?.unit || ''}</span>
-                                        <button onClick={() => handleDeleteRecipe(r.id)} className="p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-950 rounded-md"><Trash2 size={14} /></button>
+                                        {isAdmin && (
+                                          <button onClick={() => handleDeleteRecipe(r.id)} className="p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-950 rounded-md"><Trash2 size={14} /></button>
+                                        )}
                                       </div>
                                     );
                                   })}
                                 </div>
                               )}
-                              <InlineAddRecipe
-                                mainIngredients={mainIngredients}
-                                existingIds={itemRecipes.map(r => r.ingredient_id)}
-                                onAdd={async (ingredient_id, quantity) => {
-                                  const { error } = await supabase.from('menu_item_ingredients').insert({ menu_item_id: mi.id, ingredient_id, quantity });
-                                  if (error) { toast({ title: '失敗', description: error.message, variant: 'destructive' }); return; }
-                                  fetchAll();
-                                }}
-                              />
+                              {isAdmin && (
+                                <InlineAddRecipe
+                                  mainIngredients={mainIngredients}
+                                  existingIds={itemRecipes.map(r => r.ingredient_id)}
+                                  onAdd={async (ingredient_id, quantity) => {
+                                    const { error } = await supabase.from('menu_item_ingredients').insert({ menu_item_id: mi.id, ingredient_id, quantity });
+                                    if (error) { toast({ title: '失敗', description: error.message, variant: 'destructive' }); return; }
+                                    fetchAll();
+                                  }}
+                                />
+                              )}
+
                             </div>
                           );
                         })}
@@ -435,7 +444,7 @@ const InventoryPage = () => {
       </div>
 
       {/* 浮動「儲存今日備料」按鈕 */}
-      {dailyDraftCount > 0 && (
+      {isAdmin && dailyDraftCount > 0 && (
         <div className="fixed bottom-4 left-4 right-4 max-w-4xl mx-auto z-40">
           <button onClick={handleSaveDailyStock} disabled={savingDaily}
             className="w-full py-3 bg-primary text-primary-foreground rounded-xl font-bold shadow-lg">
@@ -443,6 +452,7 @@ const InventoryPage = () => {
           </button>
         </div>
       )}
+
 
       {/* Modal */}
       <AnimatePresence>
