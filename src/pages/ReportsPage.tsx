@@ -3,15 +3,31 @@ import { useNavigate } from 'react-router-dom';
 import { useOrderStore } from '@/store/useOrderStore';
 import type { Order } from '@/data/menu';
 import { motion } from 'framer-motion';
-import { ArrowLeft, TrendingUp, ShoppingBag, DollarSign, BarChart3, Calendar, Timer, RotateCcw, UtensilsCrossed, ArrowUpRight, ArrowDownRight, Minus } from 'lucide-react';
+import { ArrowLeft, TrendingUp, ShoppingBag, DollarSign, BarChart3, Calendar, Timer, RotateCcw, UtensilsCrossed, ArrowUpRight, ArrowDownRight, Minus, RefreshCcw } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from 'recharts';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { toast } from 'sonner';
 
 const COLORS = ['hsl(0,72%,42%)', 'hsl(38,80%,55%)', 'hsl(150,50%,40%)', 'hsl(210,60%,50%)', 'hsl(280,50%,50%)', 'hsl(30,70%,50%)'];
 
 const ReportsPage = () => {
-  const { orders, fetchOrders, loading } = useOrderStore();
+  const { orders, fetchOrders, archiveAllOrders, loading } = useOrderStore();
   const navigate = useNavigate();
   const [dateRange, setDateRange] = useState<'today' | 'week' | 'month'>('today');
+  const [closing, setClosing] = useState(false);
+
+  const handleCloseDay = async () => {
+    setClosing(true);
+    try {
+      await archiveAllOrders();
+      await fetchOrders(true);
+      toast.success('今日已結算並歸零');
+    } catch (e) {
+      toast.error('結算失敗，請稍後重試');
+    } finally {
+      setClosing(false);
+    }
+  };
 
   useEffect(() => {
     fetchOrders(true); // Include archived orders for reports
