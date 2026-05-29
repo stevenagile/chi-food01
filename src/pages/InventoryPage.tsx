@@ -1,10 +1,12 @@
 import { useEffect, useState, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Plus, Search, Pencil, Trash2, X, BookOpen, History, Sunrise, ChevronDown, ChevronRight } from 'lucide-react';
+import { Plus, Search, Pencil, Trash2, X, BookOpen, History, Sunrise, ChevronDown, ChevronRight, Lock } from 'lucide-react';
 import AdminNav from '@/components/AdminNav';
 import { menuItems } from '@/data/menu';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useUserRole } from '@/hooks/useUserRole';
+
 
 interface Ingredient {
   id: string;
