@@ -10,8 +10,6 @@ const tabs = [
   { path: '/admin/qr-codes', label: 'QR Code', icon: QrCode },
   { path: '/admin/manual', label: '手冊', icon: BookOpen },
 ];
-  { path: '/admin/manual', label: '手冊', icon: BookOpen },
-];
 
 const AdminNav = () => {
   const navigate = useNavigate();
