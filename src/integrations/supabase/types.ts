@@ -427,6 +427,7 @@ export type Database = {
       archive_all_orders: { Args: never; Returns: Json }
       check_ingredient_availability: { Args: { p_items: Json }; Returns: Json }
       close_daily_stats: { Args: never; Returns: Json }
+      close_daily_stats_cron: { Args: never; Returns: Json }
       get_menu_availability: {
         Args: never
         Returns: {
