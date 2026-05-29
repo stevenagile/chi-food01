@@ -8,7 +8,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import MenuPage from "./pages/MenuPage";
 import OrderStatusPage from "./pages/OrderStatusPage";
-import AdminPage from "./pages/AdminPage";
+
 import AdminLoginPage from "./pages/AdminLoginPage";
 import InventoryPage from "./pages/InventoryPage";
 import POSPage from "./pages/POSPage";
@@ -33,7 +33,7 @@ const App = () => (
             <Route path="/menu" element={<MenuPage />} />
             <Route path="/order-status/:orderId" element={<OrderStatusPage />} />
             <Route path="/admin/login" element={<AdminLoginPage />} />
-            <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
+            <Route path="/admin" element={<Navigate to="/admin/pos" replace />} />
             <Route path="/admin/inventory" element={<ProtectedRoute><InventoryPage /></ProtectedRoute>} />
             <Route path="/admin/stock" element={<Navigate to="/admin/inventory" replace />} />
             <Route path="/admin/pos" element={<ProtectedRoute><POSPage /></ProtectedRoute>} />

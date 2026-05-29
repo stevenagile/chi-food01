@@ -235,7 +235,7 @@ const ReportsPage = () => {
       <div className="bg-dark-wood text-dark-wood-foreground px-6 py-5">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <button onClick={() => navigate('/admin')} className="p-2 rounded-full hover:bg-white/10 transition-colors">
+            <button onClick={() => navigate('/admin/pos')} className="p-2 rounded-full hover:bg-white/10 transition-colors">
               <ArrowLeft size={20} />
             </button>
             <h1 className="text-xl font-serif-tc font-bold text-gold flex items-center gap-2">

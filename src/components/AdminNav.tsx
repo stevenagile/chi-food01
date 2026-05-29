@@ -1,11 +1,10 @@
 import { useNavigate, useLocation } from 'react-router-dom';
-import { LayoutGrid, ShoppingBag, Package, QrCode, BookOpen, Wallet, BarChart3, ChefHat } from 'lucide-react';
+import { ShoppingBag, Package, QrCode, BookOpen, Wallet, BarChart3, ChefHat } from 'lucide-react';
 
 const tabs = [
   { path: '/admin/pos', label: 'POS', icon: ShoppingBag },
   { path: '/admin/kds', label: '出餐', icon: ChefHat },
   { path: '/admin/inventory', label: '庫存管理', icon: Package },
-  { path: '/admin', label: '看板', icon: LayoutGrid },
   { path: '/admin/accounting', label: '帳務', icon: Wallet },
   { path: '/admin/reports', label: '報表', icon: BarChart3 },
   { path: '/admin/qr-codes', label: 'QR Code', icon: QrCode },
