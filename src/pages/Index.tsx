@@ -29,7 +29,7 @@ const Index = () => {
         </Link>
 
         <Link
-          to="/admin"
+          to="/admin/login"
           className="inline-flex items-center gap-2 text-dark-wood-foreground/50 hover:text-dark-wood-foreground/80 text-sm transition-colors"
         >
           <Settings size={16} />
