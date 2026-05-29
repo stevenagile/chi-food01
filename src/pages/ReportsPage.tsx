@@ -3,15 +3,31 @@ import { useNavigate } from 'react-router-dom';
 import { useOrderStore } from '@/store/useOrderStore';
 import type { Order } from '@/data/menu';
 import { motion } from 'framer-motion';
-import { ArrowLeft, TrendingUp, ShoppingBag, DollarSign, BarChart3, Calendar, Timer, RotateCcw, UtensilsCrossed, ArrowUpRight, ArrowDownRight, Minus } from 'lucide-react';
+import { ArrowLeft, TrendingUp, ShoppingBag, DollarSign, BarChart3, Calendar, Timer, RotateCcw, UtensilsCrossed, ArrowUpRight, ArrowDownRight, Minus, RefreshCcw } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from 'recharts';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { toast } from 'sonner';
 
 const COLORS = ['hsl(0,72%,42%)', 'hsl(38,80%,55%)', 'hsl(150,50%,40%)', 'hsl(210,60%,50%)', 'hsl(280,50%,50%)', 'hsl(30,70%,50%)'];
 
 const ReportsPage = () => {
-  const { orders, fetchOrders, loading } = useOrderStore();
+  const { orders, fetchOrders, archiveAllOrders, loading } = useOrderStore();
   const navigate = useNavigate();
   const [dateRange, setDateRange] = useState<'today' | 'week' | 'month'>('today');
+  const [closing, setClosing] = useState(false);
+
+  const handleCloseDay = async () => {
+    setClosing(true);
+    try {
+      await archiveAllOrders();
+      await fetchOrders(true);
+      toast.success('今日已結算並歸零');
+    } catch (e) {
+      toast.error('結算失敗，請稍後重試');
+    } finally {
+      setClosing(false);
+    }
+  };
 
   useEffect(() => {
     fetchOrders(true); // Include archived orders for reports
@@ -243,7 +259,7 @@ const ReportsPage = () => {
               營收報表
             </h1>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
             {(['today', 'week', 'month'] as const).map((range) => (
               <button
                 key={range}
@@ -257,6 +273,33 @@ const ReportsPage = () => {
                 {dateLabels[range]}
               </button>
             ))}
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <button
+                  disabled={closing}
+                  className="ml-2 px-4 py-1.5 rounded-full text-sm font-medium bg-red-600 text-white hover:bg-red-700 transition-colors flex items-center gap-1.5 disabled:opacity-50"
+                >
+                  <RefreshCcw size={14} />
+                  結算今日並歸零
+                </button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>確認結算並歸零？</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    將今日營收與訂單數寫入歷史紀錄，並封存所有現有訂單（POS / 出餐 / 桌況清空）。此動作無法復原。
+                    <br /><br />
+                    系統每天凌晨 4:00 也會自動執行一次，若已自動結算則無需手動操作。
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>取消</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleCloseDay} className="bg-red-600 hover:bg-red-700">
+                    確認結算
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </div>
       </div>
