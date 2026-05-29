@@ -17,7 +17,9 @@ import ManualPage from "./pages/ManualPage";
 import TableQRPage from "./pages/TableQRPage";
 import AccountingPage from "./pages/AccountingPage";
 import ReportsPage from "./pages/ReportsPage";
+import UsersPage from "./pages/UsersPage";
 import NotFound from "./pages/NotFound";
+
 
 const queryClient = new QueryClient();
 
@@ -38,10 +40,12 @@ const App = () => (
             <Route path="/admin/stock" element={<Navigate to="/admin/inventory" replace />} />
             <Route path="/admin/pos" element={<ProtectedRoute><POSPage /></ProtectedRoute>} />
             <Route path="/admin/kds" element={<ProtectedRoute><KDSPage /></ProtectedRoute>} />
-            <Route path="/admin/reports" element={<ProtectedRoute><ReportsPage /></ProtectedRoute>} />
+            <Route path="/admin/reports" element={<ProtectedRoute requireAdmin><ReportsPage /></ProtectedRoute>} />
+            <Route path="/admin/accounting" element={<ProtectedRoute requireAdmin><AccountingPage /></ProtectedRoute>} />
+            <Route path="/admin/users" element={<ProtectedRoute requireAdmin><UsersPage /></ProtectedRoute>} />
             <Route path="/admin/qr-codes" element={<ProtectedRoute><TableQRPage /></ProtectedRoute>} />
             <Route path="/admin/manual" element={<ProtectedRoute><ManualPage /></ProtectedRoute>} />
-            <Route path="/admin/accounting" element={<ProtectedRoute><AccountingPage /></ProtectedRoute>} />
+
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

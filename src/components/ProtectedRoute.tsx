@@ -1,45 +1,27 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { useUserRole } from '@/hooks/useUserRole';
 import { supabase } from '@/integrations/supabase/client';
 
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { user, loading } = useAuth();
-  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
+interface Props {
+  children: React.ReactNode;
+  /** 若為 true，僅 admin 可進入；否則 admin + staff 皆可。 */
+  requireAdmin?: boolean;
+}
 
-  useEffect(() => {
-    if (!user) {
-      setIsAdmin(null);
-      return;
-    }
-    let cancelled = false;
-    setIsAdmin(null);
-    (async () => {
-      const { data, error } = await supabase.rpc('has_role', {
-        _user_id: user.id,
-        _role: 'admin',
-      });
-      if (cancelled) return;
-      if (error) {
-        setIsAdmin(false);
-      } else {
-        setIsAdmin(Boolean(data));
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [user]);
+const ProtectedRoute = ({ children, requireAdmin = false }: Props) => {
+  const { user, loading: authLoading } = useAuth();
+  const { role, loading: roleLoading } = useUserRole();
 
+  // 沒有任何角色（被踢出系統）
   useEffect(() => {
-    if (isAdmin === false) {
+    if (!authLoading && !roleLoading && user && role === null) {
       supabase.auth.signOut();
     }
-  }, [isAdmin]);
+  }, [authLoading, roleLoading, user, role]);
 
-  const showLoading = loading || (user && isAdmin === null);
-
-  if (showLoading) {
+  if (authLoading || (user && roleLoading)) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
@@ -54,13 +36,15 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     return <Navigate to="/admin/login" replace />;
   }
 
-  if (isAdmin === false) {
+  if (role === null) {
     return (
-      <Navigate
-        to="/admin/login"
-        replace
-        state={{ error: '此帳號沒有管理員權限' }}
-      />
+      <Navigate to="/admin/login" replace state={{ error: '此帳號沒有後台權限' }} />
+    );
+  }
+
+  if (requireAdmin && role !== 'admin') {
+    return (
+      <Navigate to="/admin/pos" replace state={{ error: '此頁僅限最高管理者' }} />
     );
   }
 

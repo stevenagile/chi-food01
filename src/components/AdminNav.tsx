@@ -1,12 +1,21 @@
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ShoppingBag, Package, QrCode, BookOpen, Wallet, BarChart3, ChefHat } from 'lucide-react';
+import { ShoppingBag, Package, QrCode, BookOpen, Wallet, BarChart3, ChefHat, Users } from 'lucide-react';
+import { useUserRole } from '@/hooks/useUserRole';
 
-const tabs = [
+interface Tab {
+  path: string;
+  label: string;
+  icon: typeof ShoppingBag;
+  adminOnly?: boolean;
+}
+
+const tabs: Tab[] = [
   { path: '/admin/pos', label: 'POS', icon: ShoppingBag },
   { path: '/admin/kds', label: '出餐', icon: ChefHat },
   { path: '/admin/inventory', label: '庫存管理', icon: Package },
-  { path: '/admin/accounting', label: '帳務', icon: Wallet },
-  { path: '/admin/reports', label: '報表', icon: BarChart3 },
+  { path: '/admin/accounting', label: '帳務', icon: Wallet, adminOnly: true },
+  { path: '/admin/reports', label: '報表', icon: BarChart3, adminOnly: true },
+  { path: '/admin/users', label: '使用者', icon: Users, adminOnly: true },
   { path: '/admin/qr-codes', label: 'QR Code', icon: QrCode },
   { path: '/admin/manual', label: '手冊', icon: BookOpen },
 ];
@@ -14,9 +23,13 @@ const tabs = [
 const AdminNav = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { isAdmin } = useUserRole();
+
+  const visible = tabs.filter((t) => !t.adminOnly || isAdmin);
+
   return (
     <div className="flex items-center gap-1 flex-wrap">
-      {tabs.map(({ path, label, icon: Icon }) => {
+      {visible.map(({ path, label, icon: Icon }) => {
         const active = location.pathname === path;
         return (
           <button

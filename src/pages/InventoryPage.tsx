@@ -1,10 +1,12 @@
 import { useEffect, useState, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Plus, Search, Pencil, Trash2, X, BookOpen, History, Sunrise, ChevronDown, ChevronRight } from 'lucide-react';
+import { Plus, Search, Pencil, Trash2, X, BookOpen, History, Sunrise, ChevronDown, ChevronRight, Lock } from 'lucide-react';
 import AdminNav from '@/components/AdminNav';
 import { menuItems } from '@/data/menu';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useUserRole } from '@/hooks/useUserRole';
+
 
 interface Ingredient {
   id: string;
@@ -70,7 +72,9 @@ const InlineAddRecipe = ({ mainIngredients, existingIds, onAdd }: InlineAddRecip
 
 const InventoryPage = () => {
   const { toast } = useToast();
+  const { isAdmin } = useUserRole();
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
+
   const [recipes, setRecipes] = useState<MenuItemIngredient[]>([]);
   const [history, setHistory] = useState<DailyHistory[]>([]);
   const [servedToday, setServedToday] = useState(0);
@@ -228,10 +232,13 @@ const InventoryPage = () => {
               <div className="text-xs text-amber-700 dark:text-amber-300 font-medium">今日營運日</div>
               <div className="text-lg font-serif-tc font-bold text-amber-900 dark:text-amber-100">{todayLabel()}</div>
             </div>
-            <button onClick={handleStartNewDay} disabled={closing}
-              className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-sm font-bold flex items-center gap-1.5 disabled:opacity-50 shadow-md">
-              <Sunrise size={16} />{closing ? '處理中...' : '結束今日／開始新一天'}
-            </button>
+            {isAdmin && (
+              <button onClick={handleStartNewDay} disabled={closing}
+                className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-sm font-bold flex items-center gap-1.5 disabled:opacity-50 shadow-md">
+                <Sunrise size={16} />{closing ? '處理中...' : '結束今日／開始新一天'}
+              </button>
+            )}
+
           </div>
           <div className="grid grid-cols-3 gap-2 text-center">
             <div className="bg-card/60 rounded-xl py-2">
@@ -256,10 +263,15 @@ const InventoryPage = () => {
         <div className="bg-card border border-border rounded-2xl p-4">
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-base font-serif-tc font-bold text-foreground">原物料清單</h2>
-            <button onClick={() => openAdd()} className="px-3 py-1.5 bg-primary text-primary-foreground rounded-xl text-sm font-bold flex items-center gap-1">
-              <Plus size={14} />新增
-            </button>
+            {isAdmin ? (
+              <button onClick={() => openAdd()} className="px-3 py-1.5 bg-primary text-primary-foreground rounded-xl text-sm font-bold flex items-center gap-1">
+                <Plus size={14} />新增
+              </button>
+            ) : (
+              <span className="text-xs text-muted-foreground flex items-center gap-1"><Lock size={12} /> 僅供查看</span>
+            )}
           </div>
+
 
           <div className="flex items-center gap-2 mb-3">
             <div className="relative flex-1">
@@ -295,15 +307,18 @@ const InventoryPage = () => {
                         {item.min_stock > 0 && <span> · 安全 {item.min_stock}</span>}
                       </div>
                     </div>
-                    {isMain && (
+                    {isMain && isAdmin && (
                       <input type="number" step="0.1" placeholder="今日備料" value={draft ?? ''}
                         onChange={e => setDailyStock(p => ({ ...p, [item.id]: e.target.value }))}
                         className={`w-24 px-2 py-1.5 rounded-lg border bg-card text-sm text-right ${draft ? 'border-primary ring-2 ring-primary/30' : 'border-border'}`} />
                     )}
-                    <div className="flex gap-1">
-                      <button onClick={() => openEdit(item)} className="p-2 text-muted-foreground hover:bg-muted rounded-lg"><Pencil size={14} /></button>
-                      <button onClick={() => handleDeleteIngredient(item.id)} className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-950 rounded-lg"><Trash2 size={14} /></button>
-                    </div>
+                    {isAdmin && (
+                      <div className="flex gap-1">
+                        <button onClick={() => openEdit(item)} className="p-2 text-muted-foreground hover:bg-muted rounded-lg"><Pencil size={14} /></button>
+                        <button onClick={() => handleDeleteIngredient(item.id)} className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-950 rounded-lg"><Trash2 size={14} /></button>
+                      </div>
+                    )}
+
                   </div>
                 );
               })}
@@ -354,25 +369,34 @@ const InventoryPage = () => {
                                     return (
                                       <div key={r.id} className="flex items-center gap-2 bg-card rounded-lg border border-border px-2 py-1.5">
                                         <span className="flex-1 text-sm truncate">{ing?.name || '未知'}</span>
-                                        <input type="number" step="0.01" defaultValue={r.quantity}
-                                          onBlur={e => { const v = Number(e.target.value); if (v !== r.quantity) handleUpdateRecipeQty(r.id, v); }}
-                                          className="w-16 px-2 py-1 rounded-md border border-border bg-background text-sm text-right" />
+                                        {isAdmin ? (
+                                          <input type="number" step="0.01" defaultValue={r.quantity}
+                                            onBlur={e => { const v = Number(e.target.value); if (v !== r.quantity) handleUpdateRecipeQty(r.id, v); }}
+                                            className="w-16 px-2 py-1 rounded-md border border-border bg-background text-sm text-right" />
+                                        ) : (
+                                          <span className="w-16 px-2 py-1 text-sm text-right text-foreground">{r.quantity}</span>
+                                        )}
                                         <span className="text-xs text-muted-foreground w-6">{ing?.unit || ''}</span>
-                                        <button onClick={() => handleDeleteRecipe(r.id)} className="p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-950 rounded-md"><Trash2 size={14} /></button>
+                                        {isAdmin && (
+                                          <button onClick={() => handleDeleteRecipe(r.id)} className="p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-950 rounded-md"><Trash2 size={14} /></button>
+                                        )}
                                       </div>
                                     );
                                   })}
                                 </div>
                               )}
-                              <InlineAddRecipe
-                                mainIngredients={mainIngredients}
-                                existingIds={itemRecipes.map(r => r.ingredient_id)}
-                                onAdd={async (ingredient_id, quantity) => {
-                                  const { error } = await supabase.from('menu_item_ingredients').insert({ menu_item_id: mi.id, ingredient_id, quantity });
-                                  if (error) { toast({ title: '失敗', description: error.message, variant: 'destructive' }); return; }
-                                  fetchAll();
-                                }}
-                              />
+                              {isAdmin && (
+                                <InlineAddRecipe
+                                  mainIngredients={mainIngredients}
+                                  existingIds={itemRecipes.map(r => r.ingredient_id)}
+                                  onAdd={async (ingredient_id, quantity) => {
+                                    const { error } = await supabase.from('menu_item_ingredients').insert({ menu_item_id: mi.id, ingredient_id, quantity });
+                                    if (error) { toast({ title: '失敗', description: error.message, variant: 'destructive' }); return; }
+                                    fetchAll();
+                                  }}
+                                />
+                              )}
+
                             </div>
                           );
                         })}
@@ -420,7 +444,7 @@ const InventoryPage = () => {
       </div>
 
       {/* 浮動「儲存今日備料」按鈕 */}
-      {dailyDraftCount > 0 && (
+      {isAdmin && dailyDraftCount > 0 && (
         <div className="fixed bottom-4 left-4 right-4 max-w-4xl mx-auto z-40">
           <button onClick={handleSaveDailyStock} disabled={savingDaily}
             className="w-full py-3 bg-primary text-primary-foreground rounded-xl font-bold shadow-lg">
@@ -428,6 +452,7 @@ const InventoryPage = () => {
           </button>
         </div>
       )}
+
 
       {/* Modal */}
       <AnimatePresence>
